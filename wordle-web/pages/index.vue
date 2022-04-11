@@ -72,6 +72,7 @@
           </a>
         </v-card-text>
         <v-card-actions>
+          <v-btn color="primary" nuxt to="/game"> Start Wordln't </v-btn>
           <v-spacer />
           <v-btn color="primary" nuxt to="/inspire"> {{buttonText}} </v-btn>
           <v-btn color="secondary" :loading="isLoading" @click="changeButtonText"> Change Text </v-btn>

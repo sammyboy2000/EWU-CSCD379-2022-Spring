@@ -1,6 +1,6 @@
 Please feel free to submit updates.
 
-[Assignments Link](Assignments.md)
+[Assignment Link](https://kind-beach-00df7141e.1.azurestaticapps.net) (Links to Azure)
 
 [Lectures Link](Lectures.md)
 
