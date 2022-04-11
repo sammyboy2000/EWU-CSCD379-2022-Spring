@@ -5,7 +5,6 @@
           <h1>Wordln't</h1>
         </v-card-title>
       <v-card class="logo py-4 d-flex justify-center">
-        <br>
         <DTCannon />
       </v-card>
       <v-card>
