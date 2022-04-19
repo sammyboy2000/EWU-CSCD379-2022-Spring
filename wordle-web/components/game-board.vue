@@ -16,9 +16,9 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { WordleGame } from '~/scripts/wordleGame'
-import { Word } from '~/scripts/word'
-import { Letter } from '~/scripts/letter'
+import { WordleGame } from '../scripts/wordleGame'
+import { Word } from '../scripts/word'
+import { Letter } from '../scripts/letter'
 
 @Component({ components: {} })
 export default class GameBoard extends Vue {

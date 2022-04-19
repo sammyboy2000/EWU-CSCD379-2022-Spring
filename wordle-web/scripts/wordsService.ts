@@ -1,6 +1,20 @@
+import { Word } from "./word";
+
 export abstract class WordsService {
   static getRandomWord(): string {
     return this.#words[Math.floor(Math.random() * this.#words.length)]
+  }
+
+  static validWords(word: Word): string[] {
+    return this.#words.filter(function(element) {
+      let matching = true;
+      for(let i = 0; i < word.length; i++){
+        if((word.letters[i]?.char ?? '?') !== element[i] && (word.letters[i]?.char ?? '?') !== '?'){
+          matching = false;
+        }
+      }
+      return matching;
+    })
   }
 
   // From: https://github.com/kashapov/react-testing-projects/blob/master/random-word-server/five-letter-words.json

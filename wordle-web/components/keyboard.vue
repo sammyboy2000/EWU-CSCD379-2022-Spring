@@ -28,13 +28,45 @@
     >
       <v-icon>mdi-backspace</v-icon>
     </v-btn>
+    <v-container  class="float-right">
+      <v-menu 
+      max-height='360'
+      >
+        <template #activator="{on, attrs}">
+          <v-btn
+          :disabled="wordleGame.gameOver"
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+          >
+              {{numberOfValidWords}}
+          </v-btn>
+        </template>
+        <v-list>
+              <v-list-item
+                v-for="(word, index) in validWordList"
+                :key="index"
+                ripple
+                >
+                  <v-list-item-title 
+                  @click="setWord(word)"
+                  v-text='word'
+                  ></v-list-item-title>
+              </v-list-item>
+        </v-list>
+      </v-menu>
+      Words
+    </v-container>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { Letter, LetterStatus } from '~/scripts/letter'
-import { WordleGame } from '~/scripts/wordleGame'
+import { Letter, LetterStatus } from '../scripts/letter'
+import { Word } from '../scripts/word'
+import { WordleGame } from '../scripts/wordleGame'
+import { WordsService } from '../scripts/wordsService'
 
 @Component
 export default class KeyBoard extends Vue {
@@ -53,6 +85,15 @@ export default class KeyBoard extends Vue {
 
   removeLetter() {
     this.wordleGame.currentWord.removeLetter()
+  }
+
+  setWord(word: string) {
+    while(this.wordleGame.currentWord.length > 0){
+      this.removeLetter()
+    }
+    for(let i = 0; i < word.length; i++){
+        this.setLetter(word[i])
+      }
   }
 
   guessWord() {
@@ -76,6 +117,20 @@ export default class KeyBoard extends Vue {
     }
 
     return Letter.getColorCode(LetterStatus.Unknown)
+  }
+
+  get validWordList() {
+    const word: Word = this.wordleGame.currentWord
+    if (word !== undefined) {
+      return WordsService.validWords(word)
+    }
+  }
+
+  get numberOfValidWords(){
+    if (this.validWordList !== undefined){
+      return this.validWordList.length
+    }
+    return 0
   }
 }
 </script>

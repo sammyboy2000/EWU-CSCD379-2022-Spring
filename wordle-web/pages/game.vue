@@ -19,18 +19,17 @@
     </v-alert>
 
     <game-board :wordleGame="wordleGame" />
-
     <keyboard :wordleGame="wordleGame" />
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { WordsService } from '~/scripts/wordsService'
-import { GameState, WordleGame } from '~/scripts/wordleGame'
-import KeyBoard from '@/components/keyboard.vue'
-import GameBoard from '@/components/game-board.vue'
-import { Word } from '~/scripts/word'
+import { WordsService } from '../scripts/wordsService'
+import { GameState, WordleGame } from '../scripts/wordleGame'
+import { Word } from '../scripts/word'
+import KeyBoard from '../components/keyboard.vue'
+import GameBoard from '../components/game-board.vue'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
@@ -59,5 +58,6 @@ export default class Game extends Vue {
     }
     return ''
   }
+
 }
 </script>
