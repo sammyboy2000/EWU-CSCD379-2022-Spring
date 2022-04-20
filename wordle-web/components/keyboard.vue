@@ -21,42 +21,44 @@
       Guess
     </v-btn>
     <v-btn
-      :disabled="wordleGame.gameOver"
+      :disabled=
       icon
       class="float-right"
       @click="removeLetter"
     >
       <v-icon>mdi-backspace</v-icon>
     </v-btn>
-    <v-container  class="float-right">
-      <v-menu 
-      max-height='360'
-      >
-        <template #activator="{on, attrs}">
-          <v-btn
-          :disabled="wordleGame.gameOver"
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-          >
-              {{numberOfValidWords}}
-          </v-btn>
-        </template>
-        <v-list>
-              <v-list-item
-                v-for="(word, index) in validWordList"
-                :key="index"
-                ripple
-                >
-                  <v-list-item-title 
-                  @click="setWord(word)"
-                  v-text='word'
-                  ></v-list-item-title>
-              </v-list-item>
-        </v-list>
-      </v-menu>
-      Words
+    <v-container>
+      <v-row 
+      align="center"
+      justify="center">
+        <v-menu 
+        max-height="360"
+        offset-x=true boolean:
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              :disabled="helpIsDisabled"
+              color="accent"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ numberOfValidWords }}
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item v-for="(word, index) in validWordList" :key="index">
+              <v-list-item-group>
+                <v-list-item>
+                  <v-list-item-title @click="setWord(word)" v-text="word">
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-row>
     </v-container>
   </v-card>
 </template>
@@ -79,6 +81,13 @@ export default class KeyBoard extends Vue {
     ['z', 'x', 'c', 'v', 'b', 'n', 'm', '?'],
   ]
 
+  get helpIsDisabled():boolean{
+    if(this.wordleGame.currentWord.length === 0 || this.wordleGame.gameOver || this.numberOfValidWords === 0){
+      return true
+    }
+    return false
+  }
+
   setLetter(char: string) {
     this.wordleGame.currentWord.addLetter(char)
   }
@@ -88,12 +97,12 @@ export default class KeyBoard extends Vue {
   }
 
   setWord(word: string) {
-    while(this.wordleGame.currentWord.length > 0){
+    while (this.wordleGame.currentWord.length > 0) {
       this.removeLetter()
     }
-    for(let i = 0; i < word.length; i++){
-        this.setLetter(word[i])
-      }
+    for (let i = 0; i < word.length; i++) {
+      this.setLetter(word[i])
+    }
   }
 
   guessWord() {
@@ -122,15 +131,18 @@ export default class KeyBoard extends Vue {
   get validWordList() {
     const word: Word = this.wordleGame.currentWord
     if (word !== undefined) {
-      return WordsService.validWords(word)
+      if(word.length > 0){
+        return WordsService.validWords(word)
+      }
+      return undefined
     }
   }
 
-  get numberOfValidWords(){
-    if (this.validWordList !== undefined){
+  get numberOfValidWords() {
+    if (this.validWordList !== undefined) {
       return this.validWordList.length
     }
-    return 0
+    return "Word List"
   }
 }
 </script>
