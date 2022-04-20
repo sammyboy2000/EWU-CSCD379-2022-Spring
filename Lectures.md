@@ -2,6 +2,16 @@
 - [Recording Links](https://intellitectsp.sharepoint.com/:f:/s/EWU-CSCD379-2022-Spring/EvQdR7Ht30tKr3TZn5B6qJYBmdO0FTfx1mTHoibSh2wvdA?e=qH6mSn)
 - This is an MS Teams link and everyone in the class should have access. If not, please contact an instructor.
 
+### Lecture 5 (4/19/22)
+- npm run lintfix & it's importance
+- Assignment 2 overview
+- Vuetify Components Continued
+  - v-dialog
+  - v-menu
+- Vuetify themes
+- router-link
+- created/mounted functions
+
 ### Lecture 4 (4/14/22)
 - Keeping Git Fork in sync with class repo
 - Vuetify components
