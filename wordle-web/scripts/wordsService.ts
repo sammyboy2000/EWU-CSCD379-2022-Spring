@@ -1,4 +1,4 @@
-import { Word } from "./word";
+import { Word } from './word'
 
 export abstract class WordsService {
   static getRandomWord(): string {
@@ -6,15 +6,20 @@ export abstract class WordsService {
   }
 
   static validWords(word: Word): string[] {
-    return this.#words.filter(function(element) {
-      let matching = true;
-      for(let i = 0; i < word.length; i++){
-        if((word.letters[i]?.char ?? '?') !== element[i] && (word.letters[i]?.char ?? '?') !== '?'){
-          matching = false;
+    if(word.length > 0){
+    return this.#words.filter(function (element) {
+        for (let i = 0; i < word.length; i++) {
+          if (
+            (word.letters[i].char) !== element[i] &&
+            (word.letters[i].char) !== '?'
+          ) {
+            return false
+          }
         }
-      }
-      return matching;
-    })
+        return true
+      })
+    }
+    return [];
   }
 
   // From: https://github.com/kashapov/react-testing-projects/blob/master/random-word-server/five-letter-words.json
