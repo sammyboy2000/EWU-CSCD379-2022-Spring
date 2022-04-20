@@ -21,8 +21,7 @@
       Guess
     </v-btn>
     <v-btn
-      :disabled=
-      icon
+      :disabled="wordleGame.gameOver"
       class="float-right"
       @click="removeLetter"
     >
@@ -34,7 +33,8 @@
       justify="center">
         <v-menu 
         max-height="360"
-        offset-x=true boolean:
+        :offset-x="true"
+        :close-on-content-click="true"
         >
           <template #activator="{ on, attrs }">
             <v-btn
@@ -82,7 +82,11 @@ export default class KeyBoard extends Vue {
   ]
 
   get helpIsDisabled():boolean{
-    if(this.wordleGame.currentWord.length === 0 || this.wordleGame.gameOver || this.numberOfValidWords === 0){
+    if(
+      this.wordleGame.currentWord.length === 0 ||
+      this.wordleGame.gameOver ||
+      this.numberOfValidWords === 0 ||
+      this.wordleGame.currentWord.length === 5){
       return true
     }
     return false
