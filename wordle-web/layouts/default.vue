@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar fixed app>
       <router-link to="/" class="text-h4 font-weight-black no-decoration">
-        Wordle
+        Inconceivable!
       </router-link>
       <v-spacer />
       <settings-dialog />
