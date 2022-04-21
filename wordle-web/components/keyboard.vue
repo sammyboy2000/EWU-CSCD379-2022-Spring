@@ -28,40 +28,16 @@
       <v-icon>mdi-backspace</v-icon>
     </v-btn>
     <v-container>
-      <v-row 
+      <v-row
       align="center"
       justify="center">
-        <v-menu 
-        max-height="360"
-        :offset-x="true"
-        :close-on-content-click="true"
-        >
-          <template #activator="{ on, attrs }">
-            <v-btn
-              :disabled="helpIsDisabled"
-              color="accent"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              {{ numberOfValidWords }}
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item v-for="(word, index) in validWordList" :key="index">
-              <v-list-item-group>
-                <v-list-item>
-                  <v-list-item-title @click="setWord(word)" v-text="word">
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <help-button :keyboard="this" />
       </v-row>
     </v-container>
   </v-card>
 </template>
+
+
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
@@ -69,8 +45,9 @@ import { Letter, LetterStatus } from '../scripts/letter'
 import { Word } from '../scripts/word'
 import { WordleGame } from '../scripts/wordleGame'
 import { WordsService } from '../scripts/wordsService'
+import HelpButton from './help-button.vue'
 
-@Component
+@Component({components: {HelpButton}})
 export default class KeyBoard extends Vue {
   @Prop({ required: true })
   wordleGame!: WordleGame
