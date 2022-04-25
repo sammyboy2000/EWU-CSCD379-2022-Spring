@@ -7,6 +7,9 @@
     <v-dialog v-model="dialog" width="450">
       <v-card>
         <v-container>
+          <router-link to="/about" class="text-h4 font-weight-black no-decoration float-right" >
+            <v-icon @click="toggleDialog">mdi-information</v-icon>
+          </router-link>
           <v-card-title> Settings </v-card-title>
 
           <v-card-text>

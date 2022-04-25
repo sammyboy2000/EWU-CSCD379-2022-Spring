@@ -16,12 +16,13 @@
             </small>
           </footer>
         </blockquote>
+        <back-button/>
       </v-col>
     </v-row>
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'AboutPage',
 }
