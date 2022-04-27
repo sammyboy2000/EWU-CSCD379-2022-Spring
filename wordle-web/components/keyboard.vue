@@ -4,6 +4,7 @@
       <v-col v-for="char in charRow" :key="char" cols="1">
         <v-container class="text-center">
           <v-btn
+            style="background: linear-gradient(to bottom left, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.4))"
             :color="letterColor(char)"
             :disabled="wordleGame.gameOver"
             @click="setLetter(char)"
