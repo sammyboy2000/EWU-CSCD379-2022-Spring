@@ -7,7 +7,10 @@
     <v-dialog v-model="dialog" width="450">
       <v-card>
         <v-container>
-          <router-link to="/about" class="text-h4 font-weight-black no-decoration float-right" >
+          <router-link
+            to="/about"
+            class="text-h4 font-weight-black no-decoration float-right"
+          >
             <v-icon @click="toggleDialog">mdi-information</v-icon>
           </router-link>
           <v-card-title> Settings </v-card-title>
@@ -42,7 +45,7 @@
                   <v-list-item @click="purpleTheme">
                     <v-list-item-title> Lavender </v-list-item-title>
                   </v-list-item>
-                   <v-list-item @click="greenTheme">
+                  <v-list-item @click="greenTheme">
                     <v-list-item-title> Forest </v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="blueTheme">

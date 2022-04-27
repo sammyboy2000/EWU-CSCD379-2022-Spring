@@ -1,16 +1,15 @@
 <template>
   <v-container fluid fill-height justify-center>
-
     <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
       {{ gameResult.text }}
       <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
     </v-alert>
-  <v-row justify="center" class="my-16">
-    <game-board :wordleGame="wordleGame" />
-  </v-row>
-  <v-row justify="center" class="my-16">
-    <keyboard :wordleGame="wordleGame" />
-  </v-row>
+    <v-row justify="center" class="my-16">
+      <game-board :wordleGame="wordleGame" />
+    </v-row>
+    <v-row justify="center" class="my-16">
+      <keyboard :wordleGame="wordleGame" />
+    </v-row>
   </v-container>
 </template>
 
@@ -49,6 +48,5 @@ export default class Game extends Vue {
     }
     return ''
   }
-
 }
 </script>

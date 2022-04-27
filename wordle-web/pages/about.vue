@@ -16,7 +16,7 @@
             </small>
           </footer>
         </blockquote>
-        <back-button/>
+        <back-button />
       </v-col>
     </v-row>
   </v-card>
