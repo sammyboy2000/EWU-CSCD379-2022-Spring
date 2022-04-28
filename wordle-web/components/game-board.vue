@@ -5,7 +5,7 @@
         <v-col v-for="index in wordleGame.currentWord.maxLetters" :key="index">
           <v-card
             height="50"
-            style="background: linear-gradient(to bottom left, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.4));"
+            class="gradient-Button"
             :color="letterColor(getLetter(row, index))"
           >
             <v-card-text class="text-center">
@@ -48,3 +48,13 @@ export default class GameBoard extends Vue {
   }
 }
 </script>
+
+<style>
+.gradient-Button {
+  background: linear-gradient(
+    to bottom left,
+    rgba(0, 0, 0, 0.7),
+    rgba(255, 255, 255, 0.4)
+  );
+}
+</style>
