@@ -53,8 +53,8 @@ export default class GameBoard extends Vue {
 .gradient-Button {
   background: linear-gradient(
     to bottom left,
-    rgba(0, 0, 0, 0.7),
-    rgba(255, 255, 255, 0.4)
+    rgba(127, 127, 127, 0.4),
+    rgba(0, 0, 0, 0)
   );
 }
 </style>
