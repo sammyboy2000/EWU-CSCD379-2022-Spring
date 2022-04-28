@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn icon @click="toggleDialog">
-      <v-icon> mdi-cog </v-icon>
+      <v-icon color="secondary"> mdi-hamburger </v-icon>
     </v-btn>
 
     <v-dialog v-model="dialog" width="450">
