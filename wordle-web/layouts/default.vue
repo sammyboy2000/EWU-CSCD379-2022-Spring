@@ -7,6 +7,7 @@
       </router-link>
       <v-spacer />
       <settings-dialog />
+      <hamburger-menu />
     </v-app-bar>
     <v-main>
       <v-container>
