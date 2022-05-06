@@ -22,6 +22,10 @@ export class WordleGame {
     return this.words[this.words.length - 1]
   }
 
+  set currentWord(word: Word) {
+    this.words[this.words.length - 1] = word
+  }
+
   get gameOver(): Boolean {
     return this.state === GameState.Won || this.state === GameState.Lost
   }
