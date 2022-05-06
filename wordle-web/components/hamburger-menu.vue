@@ -9,6 +9,42 @@
     max-width="64"
     >
       <v-btn
+      to="/"
+      rounded
+      min-width="64"
+      min-height="64"
+      class="justify-center"
+      @click="toggleDialog">
+        <v-icon x-large>mdi-home</v-icon>
+      </v-btn>
+      <v-btn
+      to="/game"
+      rounded
+      min-width="64"
+      min-height="64"
+      class="justify-center"
+      @click="toggleDialog">
+        <v-icon x-large>mdi-glass-wine</v-icon>
+      </v-btn>
+      <v-btn
+      to="/ScoreStats"
+      rounded
+      min-width="64"
+      min-height="64"
+      class="justify-center"
+      @click="toggleDialog">
+        <v-icon x-large>mdi-trophy-award</v-icon>
+      </v-btn>
+      <v-btn
+      to="/inspire"
+      rounded
+      min-width="64"
+      min-height="64"
+      class="justify-center"
+      @click="toggleDialog">
+        <v-icon x-large>mdi-head-dots-horizontal</v-icon>
+      </v-btn>
+      <v-btn
       to="/about"
       rounded
       min-width="64"
