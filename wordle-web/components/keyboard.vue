@@ -4,6 +4,7 @@
       <v-col v-for="char in charRow" :key="char" cols="1">
         <v-container class="text-center">
           <v-btn
+            class="gradient-Button"
             :color="letterColor(char)"
             :disabled="wordleGame.gameOver"
             @click="setLetter(char)"
@@ -28,16 +29,12 @@
       <v-icon>mdi-backspace</v-icon>
     </v-btn>
     <v-container>
-      <v-row
-      align="center"
-      justify="center">
+      <v-row align="center" justify="center">
         <help-button :keyboard="this" />
       </v-row>
     </v-container>
   </v-card>
 </template>
-
-
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
@@ -47,7 +44,7 @@ import { WordleGame } from '../scripts/wordleGame'
 import { WordsService } from '../scripts/wordsService'
 import HelpButton from './help-button.vue'
 
-@Component({components: {HelpButton}})
+@Component({ components: { HelpButton } })
 export default class KeyBoard extends Vue {
   @Prop({ required: true })
   wordleGame!: WordleGame
@@ -58,12 +55,13 @@ export default class KeyBoard extends Vue {
     ['z', 'x', 'c', 'v', 'b', 'n', 'm', '?'],
   ]
 
-  get helpIsDisabled():boolean{
-    if(
+  get helpIsDisabled(): boolean {
+    if (
       this.wordleGame.currentWord.length === 0 ||
       this.wordleGame.gameOver ||
       this.numberOfValidWords === 0 ||
-      this.wordleGame.currentWord.length === 5){
+      this.wordleGame.currentWord.length === 5
+    ) {
       return true
     }
     return false
@@ -112,7 +110,7 @@ export default class KeyBoard extends Vue {
   get validWordList() {
     const word: Word = this.wordleGame.currentWord
     if (word !== undefined) {
-      if(word.length > 0){
+      if (word.length > 0) {
         return WordsService.validWords(word)
       }
       return undefined
@@ -123,7 +121,7 @@ export default class KeyBoard extends Vue {
     if (this.validWordList !== undefined) {
       return this.validWordList.length
     }
-    return "Word List"
+    return 'Word List'
   }
 }
 </script>

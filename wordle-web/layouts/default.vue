@@ -2,11 +2,12 @@
   <v-app>
     <v-app-bar fixed app>
       <router-link to="/" class="text-h4 font-weight-black no-decoration">
-        <v-icon color='secondary' x-large>mdi-glass-wine</v-icon>
+        <v-icon color="secondary" x-large>mdi-glass-wine</v-icon>
         Inconceivable!
       </router-link>
       <v-spacer />
       <settings-dialog />
+      <hamburger-menu />
     </v-app-bar>
     <v-main>
       <v-container>

@@ -12,11 +12,11 @@
           </p>
           <footer>
             <small>
-              <em>&mdash;Sammuel Shaw &#38; Zachariah Ward</em>
+              <em>&mdash;Samuel Shaw &#38; Zachariah Ward</em>
             </small>
           </footer>
         </blockquote>
-        <back-button/>
+        <back-button />
       </v-col>
     </v-row>
   </v-card>
