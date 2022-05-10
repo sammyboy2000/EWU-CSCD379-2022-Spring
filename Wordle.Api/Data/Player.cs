@@ -2,7 +2,7 @@
 
 namespace Wordle.Api.Data
 {
-    public class Players
+    public class Player
     {
         [Key]
         public int PlayerId { get; set; }

@@ -3,8 +3,8 @@ using Wordle.Api.Services;
 
 namespace Wordle.Api.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
     public class LeaderBoardController
     {
         private readonly ILogger<LeaderBoardController> _logger;
