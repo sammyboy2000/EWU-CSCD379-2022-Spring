@@ -46,7 +46,7 @@ export default class PlayerInfo extends Vue {
     this.dialog = !this.dialog
   }
 
-  getName(): string | null {
+  public getName(): string | null {
     if (localStorage.getItem('name')) {
       return localStorage.getItem('name')
     } else return 'Guest'

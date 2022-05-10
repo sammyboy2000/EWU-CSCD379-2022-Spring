@@ -24,20 +24,35 @@ import { GameState, WordleGame } from '../scripts/wordleGame'
 import { Word } from '../scripts/word'
 import KeyBoard from '../components/keyboard.vue'
 import GameBoard from '../components/game-board.vue'
-
+import PlayerInfo from '~/components/player-info.vue'
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
   word: string = WordsService.getRandomWord()
   wordleGame = new WordleGame(this.word)
+  gameCount = 1
+  startTime: Date = new Date()
+  finishTime: Date = new Date()
+  totalTime = 0
+  player: PlayerInfo = new PlayerInfo()
 
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
+    this.gameCount++
   }
 
   get gameResult() {
+    this.finishTime = new Date()
     if (this.wordleGame.state === GameState.Won) {
-      return { type: 'success', text: 'Yay! You won!' }
+      this.totalTime =
+        (this.finishTime.getTime() - this.startTime.getTime()) / 1000
+
+      return {
+        type: 'success',
+        text: `Congrats ${this.player.getName()}! You won in ${
+          this.totalTime
+        } seconds!`,
+      }
     }
     if (this.wordleGame.state === GameState.Lost) {
       return { type: 'error', text: `You lost... :( The word was ${this.word}` }
