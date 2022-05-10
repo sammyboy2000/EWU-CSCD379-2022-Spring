@@ -1,11 +1,13 @@
 <template>
   <v-app>
     <v-app-bar fixed app>
-      <router-link 
-      to="/"
-      class="text-h4 font-weight-black no-decoration ma-0 pa-0">
-        !<v-icon class="notwordle-logo" size="64">mdi-file-word-box</v-icon>ordle
-        </router-link>
+      <router-link
+        to="/"
+        class="text-h4 font-weight-black no-decoration ma-0 pa-0"
+      >
+        !<v-icon class="notwordle-logo" size="64">mdi-file-word-box</v-icon
+        >ordle
+      </router-link>
       <v-spacer />
       <settings-dialog />
       <hamburger-menu />

@@ -6,31 +6,30 @@
 
     <v-dialog
       v-model="dialog"
+      persistent
       transition="dialog-top-transition"
       max-width="256"
       class="p-6"
     >
       <v-card class="p-6" justify-center>
-        <v-form lazy-validation>
-          <v-text-field
-            v-model="playerName"
-            min-width="128"
-            label="Player Name"
-            inverted
-            class="float-center m-2"
-          ></v-text-field>
-          <v-btn
-            min-width="128"
-            justify-center
-            class="m-4"
-            @click="
-              toggleDialog()
-              setName()
-            "
-          >
-            Submit
-          </v-btn>
-        </v-form>
+        <v-text-field
+          v-model="playerName"
+          min-width="128"
+          label="Player Name"
+          inverted
+          class="float-center m-2"
+        ></v-text-field>
+        <v-btn
+          min-width="128"
+          justify-center
+          class="m-4"
+          @click="
+            toggleDialog()
+            setName()
+          "
+        >
+          Submit
+        </v-btn>
       </v-card>
     </v-dialog>
   </v-card>

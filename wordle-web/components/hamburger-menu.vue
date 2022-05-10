@@ -3,11 +3,7 @@
     <v-btn icon @click="toggleDialog">
       <v-icon color="secondary"> mdi-hamburger </v-icon>
     </v-btn>
-    <v-dialog
-    v-model="dialog"
-    transition="scale-transition"
-    max-width="64"
-    >
+    <v-dialog v-model="dialog" transition="scale-transition" max-width="64">
       <v-btn
         to="/"
         rounded
@@ -19,12 +15,13 @@
         <v-icon x-large>mdi-home</v-icon>
       </v-btn>
       <v-btn
-      to="/game"
-      rounded
-      min-width="64"
-      min-height="64"
-      class="justify-center"
-      @click="toggleDialog">
+        to="/game"
+        rounded
+        min-width="64"
+        min-height="64"
+        class="justify-center"
+        @click="toggleDialog"
+      >
         <v-icon x-large>mdi-file-word-box</v-icon>
       </v-btn>
       <v-btn
@@ -48,12 +45,13 @@
         <v-icon x-large>mdi-trophy-award</v-icon>
       </v-btn>
       <v-btn
-      to="/about"
-      rounded
-      min-width="64"
-      min-height="64"
-      class="justify-center"
-      @click="toggleDialog">
+        to="/about"
+        rounded
+        min-width="64"
+        min-height="64"
+        class="justify-center"
+        @click="toggleDialog"
+      >
         <v-icon x-large>mdi-information</v-icon>
       </v-btn>
     </v-dialog>
