@@ -35,6 +35,16 @@
         class="justify-center"
         @click="toggleDialog"
       >
+        <v-icon x-large>mdi-format-list-numbered</v-icon>
+      </v-btn>
+      <v-btn
+        to="/leaderBoard"
+        rounded
+        min-width="64"
+        min-height="64"
+        class="justify-center"
+        @click="toggleDialog"
+      >
         <v-icon x-large>mdi-trophy-award</v-icon>
       </v-btn>
       <v-btn
