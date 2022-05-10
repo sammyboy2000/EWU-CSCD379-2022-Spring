@@ -46,7 +46,7 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class LeaderBoard extends Vue {
   stats: any = []
 
-  refreshStats() {
+  refreshPlayers() {
     this.$axios.get('/api/LeaderBoard').then((response) => {
       this.stats = response.data
     })
