@@ -23,7 +23,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(player, index) in stats" :key="index">
+            <tr v-for="(player, index) in players" :key="index">
               <td>{{ player.name }}</td>
               <td>{{ player.gameCount }}</td>
               <td>{{ player.averageAttempts }}</td>
@@ -44,11 +44,11 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class LeaderBoard extends Vue {
-  stats: any = []
+  players: any = []
 
   refreshPlayers() {
     this.$axios.get('/api/LeaderBoard').then((response) => {
-      this.stats = response.data
+      this.players = response.data
     })
   }
 }

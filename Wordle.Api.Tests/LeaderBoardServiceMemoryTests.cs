@@ -12,7 +12,7 @@ namespace Wordle.Api.Tests
         {
             LeaderBoardServiceMemory sut = new LeaderBoardServiceMemory();
             Assert.AreEqual(3, sut.GetScores().Count());
-            sut.AddScore(new GameScore(1, "test"));
+            sut.AddScore(new GameScore(1, "test", 0));
             Assert.AreEqual(4, sut.GetScores().Count());
         }
         
@@ -20,7 +20,7 @@ namespace Wordle.Api.Tests
         public void AddScore_UpdatesExistingPlayer()
         {
             LeaderBoardServiceMemory sut = new LeaderBoardServiceMemory();
-            sut.AddScore(new GameScore(5, "Ralph"));
+            sut.AddScore(new GameScore(5, "Ralph", 0));
             Assert.AreEqual(31, sut.GetScores().First(x => x.Name == "Ralph").NumberGames);
         }
     }
