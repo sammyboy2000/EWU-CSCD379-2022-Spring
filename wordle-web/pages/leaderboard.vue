@@ -16,6 +16,7 @@
         <v-simple-table>
           <thead>
             <tr>
+              <th>Rank</th>
               <th>Name</th>
               <th>Games</th>
               <th>Avg. Score</th>
@@ -24,6 +25,7 @@
           </thead>
           <tbody>
             <tr v-for="(player, index) in players" :key="index">
+              <td>{{ index + 1 }}</td>
               <td>{{ player.name }}</td>
               <td>{{ player.numberGames }} </td>
               <td>{{ player.averageGuesses }}</td>
