@@ -25,8 +25,8 @@
           <tbody>
             <tr v-for="(player, index) in players" :key="index">
               <td>{{ player.name }}</td>
-              <td>{{ player.gameCount }}</td>
-              <td>{{ player.averageAttempts }}</td>
+              <td>{{ player.numberGames }} </td>
+              <td>{{ player.averageGuesses }}</td>
               <td>{{ player.averageSeconds }}</td>
             </tr>
           </tbody>
