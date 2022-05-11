@@ -6,7 +6,8 @@ name: Build and deploy ASP.Net Core app to Azure Web App - Inconceivable-API
 on:
   push:
     branches:
-      - Assignment3
+      - 'main'
+      - "Assignment*"
     paths:
       - 'Wordle.api/**'
   workflow_dispatch:
