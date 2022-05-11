@@ -42,6 +42,7 @@ namespace Wordle.Api.Services
             var result = _context.Players.
                 OrderBy(x => x.AverageAttempts).
                 ThenBy(x => x.AverageSecondsPerGame).
+                Take(10).
                 Select(x => new Score(x.Name, x.GameCount, x.AverageAttempts, x.AverageSecondsPerGame));
             return result;
         }
