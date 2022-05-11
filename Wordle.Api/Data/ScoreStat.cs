@@ -9,7 +9,6 @@ namespace Wordle.Api.Data
         public int Score { get; set; }
         public int AverageSeconds { get; set; }
         public int TotalGames { get; set; }
-        //Todo-Remove this comment after workflow established.
 
         public ScoreStat Clone()
         {
