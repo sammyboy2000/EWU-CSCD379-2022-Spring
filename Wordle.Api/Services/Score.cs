@@ -5,12 +5,14 @@
         public string Name { get; set; }
         public int NumberGames { get; set; }
         public double AverageGuesses { get; set; }
+        public double AverageSeconds { get; set; }
 
-        public Score(string name, int numberGames, double averageGuesses)
+        public Score(string name, int numberGames, double averageGuesses, double averageSeconds)
         {
             Name = name;
             NumberGames = numberGames;
             AverageGuesses = averageGuesses;
+            AverageSeconds = averageSeconds;
         }
     }
 }

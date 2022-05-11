@@ -37,10 +37,13 @@ namespace Wordle.Api.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<Score> GetScores()
+        IEnumerable<Score> ILeaderBoardService.GetScores()
         {
-            var result = _context.Players.OrderBy(x => x.AverageAttempts).ThenBy(x => x.AverageSecondsPerGame);
-            return (IEnumerable<Score>)result;
+            var result = _context.Players.
+                OrderBy(x => x.AverageAttempts).
+                ThenBy(x => x.AverageSecondsPerGame).
+                Select(x => new Score(x.Name, x.GameCount, x.AverageAttempts, x.AverageSecondsPerGame));
+            return result;
         }
     }
 }
