@@ -59,9 +59,13 @@ export default class LeaderBoard extends Vue {
     playerName: string | null,
     totalSeconds: number
   ) {
-    await this.$axios.post('/api/Players', {
+    await this.$axios.post('/api/LeaderBoard', {
       score: finalScore,
       name: playerName,
+      seconds: totalSeconds,
+    })
+     await this.$axios.post('/api/ScoreStats', {
+      score: finalScore,
       seconds: totalSeconds,
     })
   }
