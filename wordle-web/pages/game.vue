@@ -84,7 +84,7 @@ export default class Game extends Vue {
     this.$axios
       .post('/api/LeaderBoard', {
         score: this.gameCount,
-        name: `${localStorage.getName()}`,
+        name: `${this.player.getName()}`,
         seconds: this.totalTime,
       })
       .then(function (response) {
