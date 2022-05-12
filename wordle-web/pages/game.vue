@@ -37,7 +37,6 @@ import PlayerInfo from '~/components/player-info.vue'
 export default class Game extends Vue {
   word: string = WordsService.getRandomWord()
   wordleGame = new WordleGame(this.word)
-  gameCount = 1
   startTime: Date = new Date()
   finishTime: Date = new Date()
   totalTime = 0
@@ -46,11 +45,7 @@ export default class Game extends Vue {
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
-    if (this.gameResult.type === 'error') {
-      this.gameCount = 0
       this.startTime = new Date()
-    }
-    this.gameCount++
   }
 
   get gameResult() {
@@ -61,9 +56,7 @@ export default class Game extends Vue {
 
       return {
         type: 'success',
-        text: `Congrats ${this.player.getName()}! You won in ${
-          this.gameCount
-        } game(s) in ${this.totalTime} seconds!`,
+        text: `Congrats ${this.player.getName()}! You won in ${this.totalTime} seconds!`,
       }
     }
     if (this.wordleGame.state === GameState.Lost) {
@@ -83,7 +76,7 @@ export default class Game extends Vue {
   postScore() {
     this.$axios
       .post('/api/LeaderBoard', {
-        score: this.gameCount,
+        score: this.wordleGame.words.length,
         name: `${this.player.getName()}`,
         seconds: this.totalTime.toFixed(),
       })
@@ -95,7 +88,7 @@ export default class Game extends Vue {
       })
     this.$axios
       .post('/api/ScoreStats', {
-        score: this.gameCount,
+        score: this.wordleGame.words.length,
         seconds: this.totalTime.toFixed(),
       })
       .then(function (response) {
