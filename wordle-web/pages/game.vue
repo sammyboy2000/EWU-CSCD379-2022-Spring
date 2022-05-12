@@ -45,7 +45,7 @@ export default class Game extends Vue {
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
-      this.startTime = new Date()
+    this.startTime = new Date()
   }
 
   get gameResult() {
@@ -56,7 +56,9 @@ export default class Game extends Vue {
 
       return {
         type: 'success',
-        text: `Congrats ${this.player.getName()}! You won in ${this.totalTime} seconds!`,
+        text: `Congrats ${this.player.getName()}! You won in ${
+          this.totalTime
+        } seconds!`,
       }
     }
     if (this.wordleGame.state === GameState.Lost) {
