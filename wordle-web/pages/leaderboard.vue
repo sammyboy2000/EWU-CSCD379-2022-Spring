@@ -64,7 +64,7 @@ export default class LeaderBoard extends Vue {
       name: playerName,
       seconds: totalSeconds,
     })
-     this.$axios.post('/api/ScoreStats', {
+    this.$axios.post('/api/ScoreStats', {
       score: finalScore,
       seconds: totalSeconds,
     })

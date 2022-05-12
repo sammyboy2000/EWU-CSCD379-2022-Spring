@@ -46,9 +46,9 @@ export default class Game extends Vue {
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
-    if(this.gameResult.type == "error"){
-      this.gameCount=0
-      this.startTime=new Date()
+    if (this.gameResult.type === 'error') {
+      this.gameCount = 0
+      this.startTime = new Date()
     }
     this.gameCount++
   }
@@ -80,17 +80,30 @@ export default class Game extends Vue {
     return ''
   }
 
-  postScore(
-  ) {
-    this.$axios.post('/api/LeaderBoard', {
-      score: this.gameCount,
-      name: `${ localStorage.getName() }`,
-      seconds: this.totalTime,
-    })
-     this.$axios.post('/api/ScoreStats', {
-      score: this.gameCount,
-      seconds: this.totalTime,
-    })
+  postScore() {
+    this.$axios
+      .post('/api/LeaderBoard', {
+        score: this.gameCount,
+        name: `${localStorage.getName()}`,
+        seconds: this.totalTime,
+      })
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    this.$axios
+      .post('/api/ScoreStats', {
+        score: this.gameCount,
+        seconds: this.totalTime,
+      })
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     this.resetGame()
   }
 }
