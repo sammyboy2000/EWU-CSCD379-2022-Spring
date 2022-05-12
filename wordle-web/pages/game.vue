@@ -32,7 +32,6 @@ import { GameState, WordleGame } from '../scripts/wordleGame'
 import { Word } from '../scripts/word'
 import KeyBoard from '../components/keyboard.vue'
 import GameBoard from '../components/game-board.vue'
-import LeaderBoard from './leaderboard.vue'
 import PlayerInfo from '~/components/player-info.vue'
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
@@ -43,11 +42,14 @@ export default class Game extends Vue {
   finishTime: Date = new Date()
   totalTime = 0
   player: PlayerInfo = new PlayerInfo()
-  leaderboard: LeaderBoard = new LeaderBoard()
 
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
+    if(this.gameResult.type == "error"){
+      this.gameCount=0
+      this.startTime=new Date()
+    }
     this.gameCount++
   }
 
@@ -70,21 +72,26 @@ export default class Game extends Vue {
     return { type: '', text: '' }
   }
 
-  postScore() {
-    this.leaderboard.postScore(
-      this.gameCount,
-      this.player.getName(),
-      this.totalTime
-    )
-    this.resetGame()
-  }
-
   getLetter(row: number, index: number) {
     const word: Word = this.wordleGame.words[row - 1]
     if (word !== undefined) {
       return word.letters[index - 1]?.char ?? ''
     }
     return ''
+  }
+
+  postScore(
+  ) {
+    this.$axios.post('/api/LeaderBoard', {
+      score: this.gameCount,
+      name: `${ localStorage.getName() }`,
+      seconds: this.totalTime,
+    })
+     this.$axios.post('/api/ScoreStats', {
+      score: this.gameCount,
+      seconds: this.totalTime,
+    })
+    this.resetGame()
   }
 }
 </script>
