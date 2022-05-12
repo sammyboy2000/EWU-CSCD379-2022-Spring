@@ -85,7 +85,7 @@ export default class Game extends Vue {
       .post('/api/LeaderBoard', {
         score: this.gameCount,
         name: `${this.player.getName()}`,
-        seconds: this.totalTime,
+        seconds: this.totalTime.toFixed(),
       })
       .then(function (response) {
         console.log(response)
@@ -96,7 +96,7 @@ export default class Game extends Vue {
     this.$axios
       .post('/api/ScoreStats', {
         score: this.gameCount,
-        seconds: this.totalTime,
+        seconds: this.totalTime.toFixed(),
       })
       .then(function (response) {
         console.log(response)
