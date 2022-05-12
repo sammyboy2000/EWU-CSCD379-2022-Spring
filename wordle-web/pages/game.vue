@@ -1,12 +1,19 @@
 <template>
   <v-container fluid fill-height justify-center>
-     
-    <v-alert v-if="wordleGame.gameOver" width="80%" justify-center :type="gameResult.type">
+    <v-alert
+      v-if="wordleGame.gameOver"
+      width="80%"
+      justify-center
+      :type="gameResult.type"
+    >
       {{ gameResult.text }}
       <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
-      <span v-if="this.player.getName()=='Guest'">Click name to change it or submit score?</span>
-      <v-btn v-if="gameResult.type=='success'" @click="postScore()">Submit Score</v-btn>
-      
+      <span v-if="player.getName() == 'Guest'"
+        >Click name to change it or submit score?</span
+      >
+      <v-btn v-if="gameResult.type == 'success'" @click="postScore()"
+        >Submit Score</v-btn
+      >
     </v-alert>
     <PlayerInfo />
     <v-row justify="center" class="my-16">
@@ -25,8 +32,8 @@ import { GameState, WordleGame } from '../scripts/wordleGame'
 import { Word } from '../scripts/word'
 import KeyBoard from '../components/keyboard.vue'
 import GameBoard from '../components/game-board.vue'
-import PlayerInfo from '~/components/player-info.vue'
 import LeaderBoard from './leaderboard.vue'
+import PlayerInfo from '~/components/player-info.vue'
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
   word: string = WordsService.getRandomWord()
@@ -52,9 +59,9 @@ export default class Game extends Vue {
 
       return {
         type: 'success',
-        text: `Congrats ${this.player.getName()}! You won in ${this.gameCount} game(s) in ${
-          this.totalTime
-        } seconds!`,
+        text: `Congrats ${this.player.getName()}! You won in ${
+          this.gameCount
+        } game(s) in ${this.totalTime} seconds!`,
       }
     }
     if (this.wordleGame.state === GameState.Lost) {
@@ -63,11 +70,14 @@ export default class Game extends Vue {
     return { type: '', text: '' }
   }
 
-    postScore(){
-      this.leaderboard.postScore(this.gameCount, this.player.getName(), this.totalTime)
-      this.resetGame()
-    }
-
+  postScore() {
+    this.leaderboard.postScore(
+      this.gameCount,
+      this.player.getName(),
+      this.totalTime
+    )
+    this.resetGame()
+  }
 
   getLetter(row: number, index: number) {
     const word: Word = this.wordleGame.words[row - 1]

@@ -27,7 +27,7 @@
             <tr v-for="(player, index) in players" :key="index">
               <td>{{ index + 1 }}</td>
               <td>{{ player.name }}</td>
-              <td>{{ player.numberGames }} </td>
+              <td>{{ player.numberGames }}</td>
               <td>{{ player.averageGuesses }}</td>
               <td>{{ player.averageSeconds }}</td>
             </tr>
@@ -54,12 +54,11 @@ export default class LeaderBoard extends Vue {
     })
   }
 
-  public async postScore(score: number, name: string | null, seconds: number ) {
-    await this.$axios.post('/api/LeaderBoard',
-    {
-      'score': score,
-      'name': name,
-      'seconds': seconds
+  public async postScore(score: number, name: string | null, seconds: number) {
+    await this.$axios.post('/api/LeaderBoard', {
+      score,
+      name,
+      seconds,
     })
   }
 }
