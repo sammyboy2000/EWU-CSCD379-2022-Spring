@@ -1,7 +1,7 @@
 <template>
   <v-card justify-center class="p-6">
     <v-card>
-      <p id="playerName" @click="toggleDialog">Welcome, {{ getName() }}.</p>
+      <v-btn id="playerName" max-width="128" @click="toggleDialog">{{ getName() }}</v-btn>
     </v-card>
 
     <v-dialog
@@ -17,10 +17,10 @@
           min-width="128"
           label="Player Name"
           inverted
-          class="float-center m-2"
         ></v-text-field>
         <v-btn
           min-width="128"
+          max-width="128"
           justify-center
           class="m-4"
           @click="
@@ -52,8 +52,12 @@ export default class PlayerInfo extends Vue {
     } else return 'Guest'
   }
 
-  setName() {
-    if (this.playerName != null) {
+  setName(name: string) {
+    if(name != null){
+      localStorage.setItem('name', name)
+      return
+    }
+    if(this.playerName != null) {
       localStorage.setItem('name', this.playerName)
     }
   }

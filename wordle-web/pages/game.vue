@@ -1,13 +1,14 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-card>
-      <PlayerInfo />
-    </v-card>
-
-    <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
+     
+    <v-alert v-if="wordleGame.gameOver" width="80%" justify-center :type="gameResult.type">
       {{ gameResult.text }}
       <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
+      <span v-if="this.player.getName()=='Guest'">Click name to change it or submit score?</span>
+      <v-btn v-if="gameResult.type=='success'" @click="postScore()">Submit Score</v-btn>
+      
     </v-alert>
+    <PlayerInfo />
     <v-row justify="center" class="my-16">
       <game-board :wordleGame="wordleGame" />
     </v-row>
@@ -25,6 +26,7 @@ import { Word } from '../scripts/word'
 import KeyBoard from '../components/keyboard.vue'
 import GameBoard from '../components/game-board.vue'
 import PlayerInfo from '~/components/player-info.vue'
+import LeaderBoard from './leaderboard.vue'
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
   word: string = WordsService.getRandomWord()
@@ -34,6 +36,7 @@ export default class Game extends Vue {
   finishTime: Date = new Date()
   totalTime = 0
   player: PlayerInfo = new PlayerInfo()
+  leaderboard: LeaderBoard = new LeaderBoard()
 
   resetGame() {
     this.word = WordsService.getRandomWord()
@@ -49,7 +52,7 @@ export default class Game extends Vue {
 
       return {
         type: 'success',
-        text: `Congrats ${this.player.getName()}! You won in ${
+        text: `Congrats ${this.player.getName()}! You won in ${this.gameCount} game(s) in ${
           this.totalTime
         } seconds!`,
       }
@@ -59,6 +62,12 @@ export default class Game extends Vue {
     }
     return { type: '', text: '' }
   }
+
+    postScore(){
+      this.leaderboard.postScore(this.gameCount, this.player.getName(), this.totalTime)
+      this.resetGame()
+    }
+
 
   getLetter(row: number, index: number) {
     const word: Word = this.wordleGame.words[row - 1]
