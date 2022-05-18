@@ -13,13 +13,13 @@ namespace Wordle.Api.Data
         public DbSet<Player> Players => Set<Player>();
         public DbSet<Word> Words => Set<Word>();
         public DbSet<Game> Games => Set<Game>();
+        public DbSet<DateWord> DateWords => Set<DateWord>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Player>().HasData(new Player { PlayerId = 1, Name = "Inigo Montoya" });
-            modelBuilder.Entity<Player>().HasData(new Player { PlayerId = 2, Name = "Prince Humperdink" });
+            //new GameConfiguration().Configure(modelBuilder.Entity<Game>());
+            //new WordConfiguration().Configure(modelBuilder.Entity<Word>());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
-    }
+    }        
 }
