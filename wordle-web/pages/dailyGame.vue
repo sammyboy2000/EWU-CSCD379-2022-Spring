@@ -107,7 +107,6 @@ import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
-import { response } from 'express'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class DailyGame extends Vue {
@@ -118,14 +117,13 @@ export default class DailyGame extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = "error"
+  word: string = this.getDailyWord(new Date)!
   wordleGame = new WordleGame(this.word)
 
   isLoaded: boolean = false
 
   mounted() {
     setTimeout(() => {
-      this.resetGame(new Date)
       this.isLoaded = true
     }, 5000)
     this.retrieveUserName()
@@ -140,12 +138,17 @@ export default class DailyGame extends Vue {
   }
 
     getDailyWord(date: Date){
-    let selectedDay: string = (date.getMonth()+1) + "-" + date.getDate() + "-" + date.getFullYear()
-   return this.$axios.get('/DateWord?date=' + selectedDay).then(response => {
-     console.log(response.data)
-      this.word = response.data
-    })
+    let selectedDay: string = ("/DateWord?date=" + (date.getMonth()+1) + "-" + date.getDate() + "-" + date.getFullYear())
+    let word: string|void = this.dailyWordCall(selectedDay)
+    return word
   }
+
+   dailyWordCall(call: string): string | void{
+   this.$axios.get(call).then((response) => {
+     this.wordleGame = new WordleGame(response.data)
+      return response.data
+    })
+   }
   get gameResult() {
     this.stopTimer()
     this.timeInSeconds = Math.floor(this.endTime - this.startTime)
