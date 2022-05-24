@@ -32,7 +32,6 @@
                 </v-row>
               </v-container>
             </template>
-            <v-date-picker v-model="picker"></v-date-picker>
             <span> Go Home </span>
           </v-tooltip>
         </v-col>
@@ -132,8 +131,7 @@ export default class DailyGame extends Vue {
   }
 
   resetGame(date: Date) {
-    this.getDailyWord(date)
-    // game is reset in getDailyWord to avoid desync
+    this.wordleGame = new WordleGame(this.word)
     this.timeInSeconds = 0
     this.startTimer()
   }
@@ -153,6 +151,7 @@ export default class DailyGame extends Vue {
   dailyWordCall(call: string): string | void {
     this.$axios.get(call).then((response) => {
       this.wordleGame = new WordleGame(response.data)
+      this.word = response.data
       return response.data
     })
   }
