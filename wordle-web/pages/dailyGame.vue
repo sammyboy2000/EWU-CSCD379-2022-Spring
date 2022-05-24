@@ -107,10 +107,10 @@ import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
-import { url } from 'inspector'
+import { response } from 'express'
 
 @Component({ components: { KeyBoard, GameBoard } })
-export default class Game extends Vue {
+export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
@@ -118,27 +118,34 @@ export default class Game extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  params: any = new URLSearchParams(window.location.search)
-  word: string = WordsService.getDailyWord(this.params.get("date"))
+  word: string = "error"
   wordleGame = new WordleGame(this.word)
 
   isLoaded: boolean = false
 
   mounted() {
     setTimeout(() => {
+      this.resetGame(new Date)
       this.isLoaded = true
     }, 5000)
     this.retrieveUserName()
     setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
   }
 
-  resetGame() {
-    this.word = WordsService.getDailyWord(this.params.get("date"))
+  resetGame(date: Date) {
+    this.getDailyWord(date)
     this.wordleGame = new WordleGame(this.word)
     this.timeInSeconds = 0
     this.startTimer()
   }
 
+    getDailyWord(date: Date){
+    let selectedDay: string = (date.getMonth()+1) + "-" + date.getDate() + "-" + date.getFullYear()
+   return this.$axios.get('/DateWord?date=' + selectedDay).then(response => {
+     console.log(response.data)
+      this.word = response.data
+    })
+  }
   get gameResult() {
     this.stopTimer()
     this.timeInSeconds = Math.floor(this.endTime - this.startTime)

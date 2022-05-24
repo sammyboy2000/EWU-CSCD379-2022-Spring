@@ -1,15 +1,6 @@
-import axios from 'axios';
-export abstract class WordsService{
-  static $axios: any
+export abstract class WordsService {
   static getRandomWord(): string {
     return this.#words[Math.floor(Math.random() * this.#words.length)]
-  }
-
-  static getDailyWord(date: string): string {
-     this.$axios.get('/api/DateWord?date=' + date).then((response: string) => {
-      return response
-    })
-    return 'error';
   }
 
   static validWords(guess: string): string[] {

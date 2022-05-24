@@ -11,7 +11,7 @@
               <v-btn nuxt to="/game" color="primary" x-large width="200px">
                 Play
               </v-btn>
-              <v-btn nuxt @click='getDay' color="primary" x-large width="200px">
+              <v-btn nuxt to="/dailyGame" color="primary" x-large width="200px">
                 Play The Daily
               </v-btn>
             </v-card-actions>
@@ -23,25 +23,15 @@
 </template>
 
 <script lang="ts">
-import { Router } from 'express'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 
 @Component
-export default class IndexPage extends Vue {
-
-getDay() {
-  let date: Date = new Date
- let destination = '/dailyGame?date=' + date.toDateString
-this.$router.push(destination)
-}
-}
-</script> 
+export default class IndexPage extends Vue {}
+</script>
 
 <!-- <v-btn color="info" nuxt to="/leaderboard">
             Leader Board
           </v-btn> -->
 
-function getDay() {
-  throw new Error('Function not implemented.')
-}
+function getDay() { throw new Error('Function not implemented.') }
