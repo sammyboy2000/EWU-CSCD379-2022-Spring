@@ -12,7 +12,7 @@
     </v-container>
     <v-container v-if="isLoaded">
       <v-row justify="center">
-        <v-col cols="5"></v-col>
+        <v-col cols="5"><v-row> </v-row></v-col>
         <v-col cols="2" class="mt-0 mb-0 pt-0 pb-0">
           <v-tooltip bottom>
             <template #activator="{ on, attrs }">
@@ -32,6 +32,7 @@
                 </v-row>
               </v-container>
             </template>
+            <v-date-picker v-model="picker"></v-date-picker>
             <span> Go Home </span>
           </v-tooltip>
         </v-col>
@@ -102,7 +103,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { WordsService } from '~/scripts/wordsService'
 import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
@@ -117,7 +117,8 @@ export default class DailyGame extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = this.getDailyWord(new Date)!
+  date: Date = new Date()
+  word: string = this.getDailyWord(this.date)!
   wordleGame = new WordleGame(this.word)
 
   isLoaded: boolean = false
@@ -132,23 +133,30 @@ export default class DailyGame extends Vue {
 
   resetGame(date: Date) {
     this.getDailyWord(date)
-    this.wordleGame = new WordleGame(this.word)
+    // game is reset in getDailyWord to avoid desync
     this.timeInSeconds = 0
     this.startTimer()
   }
 
-    getDailyWord(date: Date){
-    let selectedDay: string = ("/DateWord?date=" + (date.getMonth()+1) + "-" + date.getDate() + "-" + date.getFullYear())
-    let word: string|void = this.dailyWordCall(selectedDay)
+  getDailyWord(date: Date) {
+    const selectedDay: string =
+      '/DateWord?date=' +
+      (date.getMonth() + 1) +
+      '-' +
+      date.getDate() +
+      '-' +
+      date.getFullYear()
+    const word: string | void = this.dailyWordCall(selectedDay)
     return word
   }
 
-   dailyWordCall(call: string): string | void{
-   this.$axios.get(call).then((response) => {
-     this.wordleGame = new WordleGame(response.data)
+  dailyWordCall(call: string): string | void {
+    this.$axios.get(call).then((response) => {
+      this.wordleGame = new WordleGame(response.data)
       return response.data
     })
-   }
+  }
+
   get gameResult() {
     this.stopTimer()
     this.timeInSeconds = Math.floor(this.endTime - this.startTime)
