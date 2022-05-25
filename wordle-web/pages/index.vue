@@ -11,6 +11,9 @@
               <v-btn nuxt to="/game" color="primary" x-large width="200px">
                 Play
               </v-btn>
+              <v-btn nuxt to="/dailyGame" color="primary" x-large width="200px">
+                Play The Daily
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-card>
@@ -19,7 +22,7 @@
   </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component'
 
@@ -30,3 +33,5 @@ export default class IndexPage extends Vue {}
 <!-- <v-btn color="info" nuxt to="/leaderboard">
             Leader Board
           </v-btn> -->
+
+function getDay() { throw new Error('Function not implemented.') }
