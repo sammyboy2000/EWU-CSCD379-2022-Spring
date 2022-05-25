@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wordle.Api.Data;
 
@@ -11,9 +12,10 @@ using Wordle.Api.Data;
 namespace Wordle.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220525053125_GameWordDate")]
+    partial class GameWordDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +42,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasIndex("WordId");
 
-                    b.ToTable("DateWords", (string)null);
+                    b.ToTable("DateWords");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Game", b =>
@@ -75,7 +77,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasIndex("WordId");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Guess", b =>
@@ -100,7 +102,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Guess", (string)null);
+                    b.ToTable("Guess");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
@@ -128,7 +130,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasKey("PlayerId");
 
-                    b.ToTable("Players", (string)null);
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.ScoreStat", b =>
@@ -150,7 +152,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasKey("ScoreStatId");
 
-                    b.ToTable("ScoreStats", (string)null);
+                    b.ToTable("ScoreStats");
 
                     b.HasData(
                         new
@@ -236,7 +238,6 @@ namespace Wordle.Api.Migrations
                     b.HasKey("WordId");
 
                     b.ToTable("Words");
-
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.DateWord", b =>
