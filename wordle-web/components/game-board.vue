@@ -25,7 +25,7 @@
               "
               :color="letterColor(getLetter(row, index))"
             >
-              <v-card-text class="text-h4 text-center pa-1">
+              <v-card-text class="text-h5 text-center pa-1">
                 {{ getChar(getLetter(row, index)) }}
               </v-card-text>
             </v-card>

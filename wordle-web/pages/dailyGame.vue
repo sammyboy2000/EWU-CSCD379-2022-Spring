@@ -68,15 +68,15 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="3"></v-col>
-        <v-col cols="6" class="mt-0 mb-0 pt-0 pb-0">
+         <v-col cols="2"></v-col>
+        <v-col cols="8" class="mt-0 mb-0 pt-0 pb-0">
           <v-img
             src="logo.jpeg"
             class="center"
-            style="width: 400px; height: 100px"
+            style="max-width: 100%; height: auto"
           />
         </v-col>
-        <v-col cols="3">
+        <v-col cols="2">
           <v-card-text align="right">
             <v-icon>mdi-timer</v-icon>
             {{ displayTimer() }}

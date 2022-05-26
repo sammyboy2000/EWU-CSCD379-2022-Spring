@@ -1,11 +1,12 @@
 <template>
   <v-card class="ma-0 pa-0" color="transparent" flat>
-    <v-row v-for="(charRow, i) in chars" :key="i" justify="center">
-      <v-col v-for="char in charRow" :key="char" cols="1" class="ma-0 pa-0">
+    <v-row v-for="(charRow, i) in chars" :key="i" justify="center" dense>
+      <v-col v-for="char in charRow" :key="char" cols="1" class="ma-0 pa-0" dense>
         <v-container class="text-center ma-0 pa-0">
           <v-btn
             class="pa-1 mx-3 my-1"
             elevation="8"
+            min-width="28px"
             :color="letterColor(char) == '' ? 'info' : letterColor(char)"
             style="
               background: linear-gradient(
@@ -25,10 +26,10 @@
     </v-row>
 
     <v-row justify="center">
-      <v-col cols="2">
+      <v-col cols="1">
         <v-btn
           :disabled="wordleGame.gameOver"
-          class="float-left pa-1 ml-3"
+          class="float-left pa-1 ml-3 "
           @click="guessWord"
         >
           Guess
@@ -37,7 +38,7 @@
 
       <v-col cols="8">
         <CandidateDisplay
-          class="pa-0"
+          class="pa-0 ml-2"
           :disable="wordleGame.gameOver"
           :candidatesArray="candidatesArray"
           :display.sync="render"
@@ -45,9 +46,10 @@
         />
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="1">
         <v-btn
           :disabled="wordleGame.gameOver"
+          min-width="28px"
           class="float-right pa-1"
           @click="removeLetter"
         >
@@ -68,6 +70,7 @@ import { WordsService } from '~/scripts/wordsService'
 @Component
 export default class KeyBoard extends Vue {
   @Prop({ required: true })
+  
   wordleGame!: WordleGame
 
   candidatesArray: string[] = []
@@ -144,5 +147,6 @@ export default class KeyBoard extends Vue {
 
     return Letter.getColorCode(LetterStatus.Unknown)
   }
+  
 }
 </script>
