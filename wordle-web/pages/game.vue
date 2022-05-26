@@ -16,7 +16,8 @@
           <v-card-text align="right">
             <v-icon>mdi-timer</v-icon>
             {{ displayTimer() }}
-          </v-card-text></v-col>
+          </v-card-text></v-col
+        >
         <v-col cols="5" class="d-flex flex-row-reverse">
           <v-dialog v-model="dialog" justify-end persistent max-width="600px">
             <template #activator="{ on, attrs }">
@@ -49,7 +50,7 @@
           </v-dialog>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="!isSmall()">
         <v-col cols="1"></v-col>
         <v-col cols="10" class="mt-0 mb-0 pt-0 pb-0">
           <v-img
@@ -58,9 +59,7 @@
             style="max-width: 100%; height: auto"
           />
         </v-col>
-        <v-col cols="1">
-          
-        </v-col>
+        <v-col cols="1"> </v-col>
       </v-row>
       <v-row justify="center" class="mt-10">
         <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
@@ -73,7 +72,8 @@
         <game-board :wordleGame="wordleGame" />
       </v-row>
       <v-row justify="center">
-        <keyboard :wordleGame="wordleGame" />
+        <smallKeyboard v-if="isSmall()" :wordleGame="wordleGame" />
+        <keyboard v-if="!isSmall()" :wordleGame="wordleGame" />
       </v-row>
     </v-container>
   </v-container>
@@ -101,6 +101,10 @@ export default class Game extends Vue {
 
   isLoaded: boolean = false
 
+  isSmall() {
+    return this.$vuetify.breakpoint.smAndDown
+  }
+
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
@@ -108,7 +112,6 @@ export default class Game extends Vue {
     this.retrieveUserName()
     setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
   }
-
 
   resetGame() {
     this.word = WordsService.getRandomWord()
