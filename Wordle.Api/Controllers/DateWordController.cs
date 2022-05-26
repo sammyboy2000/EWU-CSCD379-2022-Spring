@@ -23,7 +23,11 @@ public class DateWordController : Controller
     [HttpPost]
     public GameDto CreateGame([FromBody] CreateGameDto newGame)
     {
-        var game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
+        if (!Guid.TryParse(newGame.PlayerGuid, out _)) //done to catch invalid guids
+        {
+            newGame.PlayerGuid = Guid.Empty.ToString(); //consier changing to new guid
+        }
+        Game game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
         return new GameDto(game);
     }
 
