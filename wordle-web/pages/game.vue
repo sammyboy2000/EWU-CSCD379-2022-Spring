@@ -69,7 +69,8 @@
       </v-row>
 
       <v-row justify="center">
-        <game-board :wordleGame="wordleGame" />
+        <game-board v-if="!isSmall()" :wordleGame="wordleGame" />
+        <smallGame-board v-if="isSmall()" :wordleGame="wordleGame" />
       </v-row>
       <v-row justify="center">
         <smallKeyboard v-if="isSmall()" :wordleGame="wordleGame" />
