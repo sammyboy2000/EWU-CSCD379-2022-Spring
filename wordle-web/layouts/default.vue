@@ -61,6 +61,12 @@
             </v-list-item>
 
             <v-list-item>
+              <v-btn text block nuxt to="/dailyGameStats.vue">
+                Daily Word Info<v-icon>mdi-calendar-today</v-icon>
+              </v-btn>
+            </v-list-item>
+
+            <v-list-item>
               <v-btn text block>
                 <SettingsDialog />
               </v-btn>
