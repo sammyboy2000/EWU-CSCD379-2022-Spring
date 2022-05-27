@@ -1,4 +1,4 @@
-﻿using Wordle.Api.Data;
+using Wordle.Api.Data;
 using System.Linq;
 using static Wordle.Api.Data.Game;
 using Microsoft.EntityFrameworkCore;
@@ -91,6 +91,43 @@ namespace Wordle.Api.Services
                 .Take(1)
                 .First();
             return chosenWord;
+        }
+
+        public IEnumerable<DateWord> GetLast10DateWords()
+        {
+            //Making sure the last ten days are initialized
+            for (var i = 0; i <= 10; i++)
+            {
+                GetDailyWord(DateTime.UtcNow.AddDays(-i));
+            }
+
+            var result = _context.DateWords
+                .OrderByDescending(x => x.Date)
+                .Take(10);
+            return result;
+        }
+
+        public IEnumerable<(DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed)> CreateDataWordInfo(Guid playerGuid)
+        {
+            foreach(DateWord dateword in GetLast10DateWords())
+            {
+                var games = _context
+              .Games
+              .Where(x => x
+                  .GameType == Game.GameTypeEnum.WordOfTheDay
+                          && x.DateEnded != null
+                          && x.WordDate == dateword.Date)
+              .Include(x => x.Guesses);
+                
+                (DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed) info;
+
+                info.date = dateword.Date;
+                info.numPlays = games.Count();
+                info.averageScore = (int)games.Select(x => x.Guesses.Count).ToList().DefaultIfEmpty().Average();
+                info.averageTime = (int)games.Select(x => ((x.DateEnded - x.DateStarted) ?? TimeSpan.MaxValue).TotalSeconds).ToList().DefaultIfEmpty().Average();
+                info.hasPlayed = games.Any(x => x.Player.Guid == playerGuid);
+                yield return info;
+            }
         }
 
         public Word? GetDailyWord(DateTime date)

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using Wordle.Api.Data;
@@ -18,6 +18,17 @@ public class DateWordController : Controller
     public DateWordController(GameService gameService)
     {
         _gameService = gameService;
+    }
+
+    [HttpGet]
+    public IEnumerable<DateWordDto> Get(Guid playerGuid)
+    {
+        var dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid);
+        foreach (var I in dateWordInfoList)
+        {
+            yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed);
+        }
+        
     }
 
     [HttpPost]
