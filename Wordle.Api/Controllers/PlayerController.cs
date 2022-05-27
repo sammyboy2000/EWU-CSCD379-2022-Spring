@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Wordle.Api.Data;
 using Wordle.Api.Services;
 
@@ -37,13 +37,15 @@ public class PlayersController : ControllerBase
             return BadRequest();
         }
         //how is the PlayerPost being created and how to you validate its input?
-        _service.Update(player.Name ?? "Guest", player.Attempts, player.Seconds);
-        return Ok();
+        player.PlayerGuid = _service.validatePlayerGuid(player.PlayerGuid);
+        _service.Update(player.Name ?? "Guest", player.PlayerGuid, player.Attempts, player.Seconds);
+        return Ok(player.PlayerGuid);
     }
 
     public class PlayerPost
     {
         public string? Name { get; set; }
+        public string PlayerGuid { get; set; }
         public int Attempts { get; set; }
         public int Seconds { get; set; }
     }
