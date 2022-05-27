@@ -8,9 +8,9 @@ namespace Wordle.Api.Controllers;
 [ApiController]
 public class PlayersController : ControllerBase
 {
-    private readonly PlayersService _service;
+    private readonly PlayerService _service;
 
-    public PlayersController(PlayersService service)
+    public PlayersController(PlayerService service)
     {
         _service = service;
     }
