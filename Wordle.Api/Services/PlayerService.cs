@@ -2,13 +2,26 @@
 
 namespace Wordle.Api.Services;
 
-public class PlayersService
+public class PlayerService
 {
     private readonly AppDbContext _context;
 
-    public PlayersService(AppDbContext context)
+    public PlayerService(AppDbContext context)
     {
         _context = context;
+    }
+
+    public string validatePlayerGuid(string guid)
+    {
+        Guid validGuid;
+
+        if (!Guid.TryParse(guid, out validGuid)) 
+        { 
+            validGuid = Guid.NewGuid(); 
+        }
+
+        return validGuid.ToString();
+        
     }
 
     public IEnumerable<Player> GetPlayers()
@@ -27,8 +40,7 @@ public class PlayersService
             .Take(10);
         return result;
     }
-
-    public void Update(string name, int attempts, int seconds)
+    public void Update(string name, string guid, int attempts, int seconds)
     {
         if (attempts < 1 || attempts > 6)
         {
@@ -40,8 +52,10 @@ public class PlayersService
         }
 
         var player2 = _context.Players;
-        
-        var player = player2.FirstOrDefault(x => x.Name == name);
+
+        Guid playerGuid = Guid.Parse(guid);
+
+        var player = player2.FirstOrDefault(x => x.Guid == playerGuid);
 
 
         if (player == null)
@@ -49,6 +63,7 @@ public class PlayersService
             _context.Players.Add(new Player()
             {
                 Name = name,
+                Guid = playerGuid,
                 GameCount = 1,
                 AverageAttempts = attempts,
                 AverageSecondsPerGame = seconds
@@ -56,6 +71,7 @@ public class PlayersService
         }
         else
         {
+            player.Name = name;
             player.AverageSecondsPerGame = (player.AverageSecondsPerGame * player.GameCount + seconds) / (player.GameCount + 1);
             player.AverageAttempts = (player.AverageAttempts * player.GameCount + attempts) / ++player.GameCount;
 

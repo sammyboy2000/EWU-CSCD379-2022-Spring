@@ -28,6 +28,14 @@ public class PlayersController : ControllerBase
         return _service.GetTop10Players();
     }
 
+    [Route("[action]")]
+    [HttpGet]
+    public string ValidatePlayerGuid(string playerGuid = "getNewValidPlayerGuid")
+    {
+        playerGuid = _service.validatePlayerGuid(playerGuid);
+        return playerGuid;
+    }
+
     [HttpPost]
     public IActionResult Post([FromBody] PlayerPost player)
     {
