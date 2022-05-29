@@ -36,7 +36,7 @@ public class DateWordController : Controller
     {
         if (!Guid.TryParse(newGame.PlayerGuid, out _)) //done to catch invalid guids
         {
-            newGame.PlayerGuid = Guid.Empty.ToString(); //consider changing to new guid
+            newGame.PlayerGuid = Guid.NewGuid().ToString(); //Generate a fresh GUID if catching an invalid guid
         }
         Game game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
         return new GameDto(game);

@@ -1,4 +1,3 @@
-
 namespace Wordle.Api.Dtos
 {
     public class DateWordDto

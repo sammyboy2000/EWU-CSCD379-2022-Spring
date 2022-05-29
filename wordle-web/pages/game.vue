@@ -4,9 +4,8 @@
       <v-row justify="center">
         <v-card loading>
           <v-card-title class="justify-center">
-            You're being exploited for ad revenue, please standby...
+            Game is Loading...
           </v-card-title>
-          <PrerollAd />
         </v-card>
       </v-row>
     </v-container>
@@ -93,13 +92,13 @@ export default class Game extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
+  playerGuid: string = ''
   timeInSeconds: number = 0
   startTime: number = 0
   endTime: number = 0
   intervalID: any
   word: string = WordsService.getRandomWord()
   wordleGame = new WordleGame(this.word)
-
   isLoaded: boolean = false
 
   isSmall() {
@@ -109,9 +108,10 @@ export default class Game extends Vue {
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-    }, 5000)
+    }, 2000)
+    this.retrieveGuid()
     this.retrieveUserName()
-    setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
+    setTimeout(() => this.startTimer(), 5000) // delay is for initialization
   }
 
   resetGame() {
@@ -161,8 +161,26 @@ export default class Game extends Vue {
     }
   }
 
+  retrieveGuid() {
+    const guid = localStorage.getItem('playerGuid')
+    if (guid == null) {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    } else {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=' + guid)
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    }
+  }
+
   setUserName(userName: string) {
     localStorage.setItem('userName', userName)
+    localStorage.setItem('playerGuid', this.playerGuid)
     if (this.wordleGame.state === GameState.Won) {
       this.endGameSave()
     }
@@ -204,6 +222,7 @@ export default class Game extends Vue {
   endGameSave() {
     this.$axios.post('/api/Players', {
       name: this.playerName,
+      playerGuid: this.playerGuid,
       attempts: this.wordleGame.words.length,
       seconds: this.timeInSeconds,
     })

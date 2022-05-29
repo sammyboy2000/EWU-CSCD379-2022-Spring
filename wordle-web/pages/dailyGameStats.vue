@@ -57,7 +57,7 @@ export default class leaderboard extends Vue {
     this.getLast10DateWords()
   }
 
-    // Still need to pass in the Player Guid!!!
+  // Still need to pass in the Player Guid!!!
   getLast10DateWords() {
     this.title = 'Last 10 Daily Words'
     this.$axios.get('/api/DateWord').then((response) => {

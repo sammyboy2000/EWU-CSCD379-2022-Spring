@@ -4,9 +4,8 @@
       <v-row justify="center">
         <v-card loading>
           <v-card-title class="justify-center">
-            You're being exploited for ad revenue, please standby...
+            Game is loading...
           </v-card-title>
-          <PrerollAd />
         </v-card>
       </v-row>
     </v-container>
@@ -41,7 +40,7 @@
                 <v-btn
                   color="blue darken-1"
                   text
-                  @click=";(dialog = false), setUserName(playerName)"
+                  @click=";(dialog = false), setUser(playerName)"
                 >
                   Save
                 </v-btn>
@@ -91,12 +90,13 @@ export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
+  playerGuid: string = ''
   timeInSeconds: number = 0
   startTime: number = 0
   endTime: number = 0
   intervalID: any
   date: Date = new Date()
-  word: string = this.getDailyWord(this.date)!
+  word: string = ''
   wordleGame = new WordleGame(this.word)
 
   isLoaded: boolean = false
@@ -109,8 +109,12 @@ export default class DailyGame extends Vue {
     setTimeout(() => {
       this.isLoaded = true
     }, 5000)
+    this.retrieveGuid()
     this.retrieveUserName()
-    setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
+    setTimeout(() => {
+      this.getDailyWord()
+    }, 3000)
+    setTimeout(() => this.startTimer(), 5000) // delay is for initialization
   }
 
   // This method is probably unneeded
@@ -120,24 +124,16 @@ export default class DailyGame extends Vue {
     this.startTimer()
   }
 
-  getDailyWord(date: Date) {
-    const selectedDay: string =
-      '/DateWord?date=' +
-      (date.getMonth() + 1) +
-      '-' +
-      date.getDate() +
-      '-' +
-      date.getFullYear()
-    const word: string | void = this.dailyWordCall(selectedDay)
-    return word
-  }
-
-  dailyWordCall(call: string): string | void {
-    this.$axios.get(call).then((response) => {
-      this.wordleGame = new WordleGame(response.data)
-      this.word = response.data
-      return response.data
-    })
+  getDailyWord() {
+    this.$axios
+      .post('/api/DateWord', {
+        date: new Date(),
+        playerGuid: this.playerGuid,
+      })
+      .then((response) => {
+        this.word = response.data.word
+        this.wordleGame = new WordleGame(this.word)
+      })
   }
 
   get gameResult() {
@@ -180,8 +176,28 @@ export default class DailyGame extends Vue {
     }
   }
 
-  setUserName(userName: string) {
+  retrieveGuid() {
+    const guid = localStorage.getItem('playerGuid')
+    if (guid == null) {
+      // get new guid
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    } else {
+      // Check player guid for validity
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=' + guid)
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    }
+  }
+
+  setUser(userName: string) {
     localStorage.setItem('userName', userName)
+    localStorage.setItem('playerGuid', this.playerGuid)
     if (this.wordleGame.state === GameState.Won) {
       this.endGameSave()
     }
@@ -223,6 +239,7 @@ export default class DailyGame extends Vue {
   endGameSave() {
     this.$axios.post('/api/Players', {
       name: this.playerName,
+      playerGuid: this.playerGuid,
       attempts: this.wordleGame.words.length,
       seconds: this.timeInSeconds,
     })
