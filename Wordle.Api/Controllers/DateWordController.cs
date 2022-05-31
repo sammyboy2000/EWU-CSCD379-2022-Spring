@@ -39,7 +39,19 @@ public class DateWordController : Controller
             newGame.PlayerGuid = Guid.NewGuid().ToString(); //Generate a fresh GUID if catching an invalid guid
         }
         Game game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
-        return new GameDto(game);
+        GameDto gameDto = new GameDto(game);
+        //dirty null handling not sure why game.word is comming back null the fist time through and not throwing an error
+        //I suspect there is some weird bussiness with generating the daily word, but it saves to the context fine.
+        //that makes it so it works the second time through, so the below code only triggers once per player. I think...
+        if (gameDto.Word == "null")
+        {
+            game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
+            return new GameDto(game);
+        }
+        else
+        {
+            return gameDto;
+        }
     }
 
     public class CreateGameDto

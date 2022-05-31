@@ -19,6 +19,7 @@ namespace Wordle.Api.Services
         
         public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
         {
+
             var player = _context.Players
                 .FirstOrDefault(x => x.Guid == playerGuid);
             if (player is null)
@@ -113,11 +114,12 @@ namespace Wordle.Api.Services
             {
                 var games = _context
               .Games
+              .Include(x => x.Guesses)
+              .Include(x => x.Player)
               .Where(x => x
                   .GameType == Game.GameTypeEnum.WordOfTheDay
                           && x.DateEnded != null
-                          && x.WordDate == dateword.Date)
-              .Include(x => x.Guesses);
+                          && x.WordDate == dateword.Date);
                 
                 (DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed) info;
 
@@ -133,15 +135,18 @@ namespace Wordle.Api.Services
         public Word? GetDailyWord(DateTime date)
         {
             //Sanitize the date by dropping time data
-            date = date.Date;
-            if (date.ToUniversalTime() >= System.DateTime.Today.ToUniversalTime().AddDays(0.5))
+            if (date.ToUniversalTime() >= System.DateTime.Today.ToUniversalTime().AddDays(.75))
             {
                 return null;
             }
+            date = date.Date;
             //Check if the day has a word in the database
-            if (_cache.TryGetValue(date, out var word))
+            if (_cache.TryGetValue(date, out Word? word))
             {
-                return word;
+                if(word is not null)
+                {
+                    return word;
+                }
             }
             DateWord? wordOfTheDay = _context.DateWords
                 .Include(x => x.Word)
@@ -164,12 +169,13 @@ namespace Wordle.Api.Services
                     if (wordOfTheDay != null)
                     //Yes: return the word
                     {
+                        _cache.TryAdd(date, wordOfTheDay.Word);
                         return wordOfTheDay.Word;
                     }
                     else
                     {
                         //No: get a random word from our list
-                        var chosenWord = GetWord();
+                        Word chosenWord = GetWord();
                         //Save the word to the database with the date
                         _context.DateWords.Add(new DateWord { Date = date, Word = chosenWord });
                         _context.SaveChanges();
