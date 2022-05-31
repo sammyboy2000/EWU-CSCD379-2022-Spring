@@ -27,15 +27,8 @@ public class DateWordController : Controller
         if(Guid.TryParse(playerGuid, out _)){
             hasGuid = true;
         }
-        var dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid, hasGuid);
-        /*
-        //pretty sure something is slow in dateword fetching causing this list to not populate
-        if(dateWordInfoList.Count() < 10)
-        {
-            dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid, hasGuid);
-        }
-        */
-        foreach (var I in dateWordInfoList)
+        
+        foreach (var I in _gameService.CreateDataWordInfo(playerGuid, hasGuid))
         {
             yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed, hasGuid);
         }
