@@ -16,11 +16,11 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
       </v-app-bar>
-      <v-parallax src="/giphy.gif" height="auto">
+      <v-img src="/giphy.gif" height="auto">
         <v-main>
           <Nuxt />
         </v-main>
-      </v-parallax>
+      </v-img>
       <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
         <v-list>
           <v-list-item>
