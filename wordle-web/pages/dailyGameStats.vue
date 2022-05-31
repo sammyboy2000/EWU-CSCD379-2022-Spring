@@ -52,17 +52,41 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class leaderboard extends Vue {
   dateWords: any = []
   title: string = ''
+  playerGuid: string = ''
 
   created() {
-    this.getLast10DateWords()
+    this.retrieveGuid()
+    setTimeout(() => {
+      this.getLast10DateWords()
+    }, 3000)
   }
 
   // Still need to pass in the Player Guid!!!
   getLast10DateWords() {
     this.title = 'Last 10 Daily Words'
-    this.$axios.get('/api/DateWord').then((response) => {
-      this.dateWords = response.data
-    })
+    this.retrieveGuid()
+    this.$axios
+      .get('/api/DateWord?playerGuid=' + this.playerGuid)
+      .then((response) => {
+        this.dateWords = response.data
+      })
+  }
+
+  retrieveGuid() {
+    const guid = localStorage.getItem('playerGuid')
+    if (guid == null) {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    } else {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=' + guid)
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    }
   }
 }
 </script>
