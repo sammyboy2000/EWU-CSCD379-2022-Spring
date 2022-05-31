@@ -40,7 +40,6 @@ namespace Wordle.Api.Services
                     .Include(x => x.Word)
                     .FirstOrDefault(x => x.PlayerId == player.PlayerId &&
                                          x.GameType == GameTypeEnum.WordOfTheDay &&
-                                         x.DateEnded.HasValue &&
                                          x.WordDate == date.Value);
                 if (existingGame is not null)
                 {
