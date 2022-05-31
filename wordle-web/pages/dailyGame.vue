@@ -134,6 +134,9 @@ export default class DailyGame extends Vue {
         this.word = response.data.word
         this.wordleGame = new WordleGame(this.word)
       })
+      .catch(function (error) {
+        alert(error)
+      })
   }
 
   get gameResult() {
