@@ -128,7 +128,7 @@ export default class DailyGame extends Vue {
     this.$axios
       .post('/api/DateWord', {
         date: new Date(),
-        playerGuid: this.playerGuid,
+        playerGuid: this.playerGuid
       })
       .then((response) => {
         this.word = response.data.word
