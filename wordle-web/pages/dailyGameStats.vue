@@ -59,18 +59,20 @@ export default class leaderboard extends Vue {
     setTimeout(() => {
       this.getLast10DateWords()
     }, 3000)
-    
   }
 
   // Still need to pass in the Player Guid!!!
   getLast10DateWords() {
     this.title = 'Last 10 Daily Words'
-    this.retrieveGuid
-    this.$axios.get('/api/DateWord?playerGuid=' + this.playerGuid).then((response) => {
-      this.dateWords = response.data
-    })
+    this.retrieveGuid()
+    this.$axios
+      .get('/api/DateWord?playerGuid=' + this.playerGuid)
+      .then((response) => {
+        this.dateWords = response.data
+      })
   }
-   retrieveGuid() {
+
+  retrieveGuid() {
     const guid = localStorage.getItem('playerGuid')
     if (guid == null) {
       this.$axios
@@ -87,6 +89,4 @@ export default class leaderboard extends Vue {
     }
   }
 }
-
-
 </script>
