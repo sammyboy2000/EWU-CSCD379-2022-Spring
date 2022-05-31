@@ -4,7 +4,6 @@
     height="auto"
   >
     <v-app dark>
-      <v-parallax src="/giphy.gif" height="auto">
         <v-app-bar :clipped-left="clipped" fixed app>
           <v-toolbar-title>
             <v-btn nuxt to="/">
@@ -17,9 +16,11 @@
             <v-icon>mdi-menu</v-icon>
           </v-btn>
         </v-app-bar>
+      <v-parallax src="/giphy.gif" height="auto">
         <v-main>
           <Nuxt />
         </v-main>
+      </v-parallax>
         <v-navigation-drawer
           v-model="rightDrawer"
           :right="right"
@@ -82,7 +83,6 @@
         <v-footer app>
           <span>&copy; {{ new Date().getFullYear() }}</span>
         </v-footer>
-      </v-parallax>
     </v-app>
   </v-parallax>
 </template>
