@@ -28,6 +28,13 @@ public class DateWordController : Controller
             hasGuid = true;
         }
         var dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid, hasGuid);
+        /*
+        //pretty sure something is slow in dateword fetching causing this list to not populate
+        if(dateWordInfoList.Count() < 10)
+        {
+            dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid, hasGuid);
+        }
+        */
         foreach (var I in dateWordInfoList)
         {
             yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed, hasGuid);
@@ -35,7 +42,8 @@ public class DateWordController : Controller
         
     }
 
-    [HttpPost]
+
+[HttpPost]
     public GameDto CreateGame([FromBody] CreateGameDto newGame)
     {
         if (!Guid.TryParse(newGame.PlayerGuid, out _)) //done to catch invalid guids
