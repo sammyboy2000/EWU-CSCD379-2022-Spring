@@ -66,6 +66,7 @@ public class GameService
 
         _context.SaveChanges();
 
+        game.Word = word;
         return game;
 
     }
