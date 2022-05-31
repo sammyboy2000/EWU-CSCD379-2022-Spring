@@ -108,7 +108,7 @@ namespace Wordle.Api.Services
             return result;
         }
 
-        public IEnumerable<(DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed)> CreateDataWordInfo(Guid playerGuid)
+        public IEnumerable<(DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed)> CreateDataWordInfo(string playerGuid, bool hasGuid)
         {
             foreach(DateWord dateword in GetLast10DateWords())
             {
@@ -127,7 +127,14 @@ namespace Wordle.Api.Services
                 info.numPlays = games.Count();
                 info.averageScore = (int)games.Select(x => x.Guesses.Count).ToList().DefaultIfEmpty().Average();
                 info.averageTime = (int)games.Select(x => ((x.DateEnded - x.DateStarted) ?? TimeSpan.MaxValue).TotalSeconds).ToList().DefaultIfEmpty().Average();
-                info.hasPlayed = games.Any(x => x.Player.Guid == playerGuid);
+                if (hasGuid)
+                {
+                    info.hasPlayed = games.Any(x => x.Player.Guid.ToString() == playerGuid);
+                }
+                else
+                {
+                    info.hasPlayed = false;
+                }
                 yield return info;
             }
         }

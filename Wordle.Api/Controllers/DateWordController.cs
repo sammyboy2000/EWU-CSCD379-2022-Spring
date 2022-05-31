@@ -21,12 +21,16 @@ public class DateWordController : Controller
     }
 
     [HttpGet]
-    public IEnumerable<DateWordDto> Get(Guid playerGuid)
+    public IEnumerable<DateWordDto> Get(string playerGuid = "Fine if not a Guid")
     {
-        var dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid);
+        bool hasGuid = false;
+        if(Guid.TryParse(playerGuid, out _)){
+            hasGuid = true;
+        }
+        var dateWordInfoList = _gameService.CreateDataWordInfo(playerGuid, hasGuid);
         foreach (var I in dateWordInfoList)
         {
-            yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed);
+            yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed, hasGuid);
         }
         
     }
