@@ -162,7 +162,7 @@ export default class Game extends Vue {
   }
 
   retrieveGuid() {
-    const guid = localStorage.getItem('playerGuid')
+    let guid = localStorage.getItem('playerGuid')
     if (guid == null) {
       this.$axios
         .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')

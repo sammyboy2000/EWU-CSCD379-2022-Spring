@@ -9,7 +9,13 @@
         </v-card>
       </v-row>
     </v-container>
-    <v-container v-if="isLoaded">
+  <v-container v-if="wasPlayed">
+    <v-card-title class="justify-center">
+            You may have already played this game.  <v-btn class="ml-2" nuxt to="/"> Quit </v-btn>
+          </v-card-title>
+  </v-container>
+
+    <v-container v-if="!wasPlayed" >
       <v-row justify="left">
         <v-col cols="4">
           <v-card-text align="right">
@@ -92,6 +98,7 @@ export default class DailyGame extends Vue {
   playerName: string = ''
   playerGuid: string = ''
   gameId: number = 0
+  wasPlayed: boolean = true
   timeInSeconds: number = 0
   startTime: number = 0
   endTime: number = 0
@@ -109,12 +116,12 @@ export default class DailyGame extends Vue {
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-    }, 5000)
+    }, 3000)
     this.retrieveGuid()
     this.retrieveUserName()
     setTimeout(() => {
       this.getDailyWord()
-    }, 3000)
+    }, 2000)
     setTimeout(() => this.startTimer(), 5000) // delay is for initialization
   }
 
@@ -127,6 +134,7 @@ export default class DailyGame extends Vue {
       .then((response) => {
         this.word = response.data.word
         this.gameId = response.data.gameId
+        this.wasPlayed = response.data.wasPlayed
         this.wordleGame = new WordleGame(this.word)
       })
       .catch(function (error) {
@@ -175,7 +183,7 @@ export default class DailyGame extends Vue {
   }
 
   retrieveGuid() {
-    const guid = localStorage.getItem('playerGuid')
+    let guid = localStorage.getItem('playerGuid')
     if (guid == null) {
       // get new guid
       this.$axios
