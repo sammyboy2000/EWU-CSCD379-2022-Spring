@@ -62,7 +62,7 @@
       <v-row justify="center" class="mt-10">
         <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
           {{ gameResult.text }}
-          <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
+          <v-btn class="ml-2" nuxt to="/index"> Quit </v-btn>
         </v-alert>
       </v-row>
 
@@ -115,13 +115,6 @@ export default class DailyGame extends Vue {
       this.getDailyWord()
     }, 3000)
     setTimeout(() => this.startTimer(), 5000) // delay is for initialization
-  }
-
-  // This method is probably unneeded
-  resetGame() {
-    this.wordleGame = new WordleGame(this.word)
-    this.timeInSeconds = 0
-    this.startTimer()
   }
 
   getDailyWord() {
