@@ -112,7 +112,6 @@ export default class DailyGame extends Vue {
     }, 5000)
     this.retrieveGuid()
     this.retrieveUserName()
-    localStorage.setItem('gameId', '1')
     setTimeout(() => {
       this.getDailyWord()
     }, 3000)

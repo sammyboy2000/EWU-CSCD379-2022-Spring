@@ -109,7 +109,6 @@ export default class Game extends Vue {
     setTimeout(() => {
       this.isLoaded = true
     }, 2000)
-    localStorage.setItem('gameId', '0')
     this.retrieveGuid()
     this.retrieveUserName()
     setTimeout(() => this.startTimer(), 5000) // delay is for initialization
