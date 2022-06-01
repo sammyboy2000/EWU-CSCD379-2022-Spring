@@ -26,9 +26,9 @@ public class GameService
             .Include(x => x.Player)
             .Include(x => x.Guesses)
             .Include(x => x.Word)
-            .First();
+            .FirstOrDefault();
         
-        if(game.Player.Guid.ToString() != playerGuid)
+        if(game is null || game.Player.Guid.ToString() != playerGuid)
         {
             return false;
         }

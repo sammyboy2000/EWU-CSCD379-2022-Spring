@@ -74,7 +74,7 @@ export default class leaderboard extends Vue {
 
   retrieveGuid() {
     const guid = localStorage.getItem('playerGuid')
-    if (guid == null) {
+    if (guid == null || guid.length < 10) {
       this.$axios
         .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
         .then((response) => {

@@ -136,12 +136,12 @@ export default class DailyGame extends Vue {
         this.gameId = response.data.gameId
         this.wasPlayed = response.data.wasPlayed
         this.wordleGame = new WordleGame(this.word)
+        localStorage.setItem('playerGuid', this.playerGuid)
+        localStorage.setItem('gameId', this.gameId.toString())
       })
       .catch(function (error) {
         alert(error)
       })
-      localStorage.setItem('playerGuid', this.playerGuid)
-      localStorage.setItem('gameId',  this.gameId.toString())
   }
 
   get gameResult() {
@@ -186,7 +186,7 @@ export default class DailyGame extends Vue {
 
   retrieveGuid() {
     const guid = localStorage.getItem('playerGuid')
-    if (guid == null) {
+    if (guid == null || guid.length < 10) {
       // get new guid
       this.$axios
         .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')

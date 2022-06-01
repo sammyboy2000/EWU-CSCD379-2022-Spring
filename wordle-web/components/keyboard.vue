@@ -120,19 +120,19 @@ export default class KeyBoard extends Vue {
       this.wordleGame.currentWord.length ===
       this.wordleGame.currentWord.maxLetters
     ) {
+      this.postGame(this.wordleGame.currentWord.text)
       this.wordleGame.submitWord()
-      this.postGame()
       // this.wordleGame.currentWord
       this.candidatesArray = WordsService.validWords('')
       this.render = false
     }
   }
 
-  postGame(){
+  postGame(str: string){
     this.$axios.post('/api/Game', {
         playerGuid: localStorage.getItem('playerGuid') ?? "no playerGuid",
         gameId: Number(localStorage.getItem('gameId')),
-        guess: this.wordleGame.wordString,
+        guess: str
       })
   }
 
