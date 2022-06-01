@@ -18,6 +18,10 @@ export class WordleGame {
   state: GameState = GameState.Active
   readonly maxGuesses = 6
 
+  get wordString(): string {
+    return this.word
+  }
+
   get currentWord(): Word {
     return this.words[this.words.length - 1]
   }

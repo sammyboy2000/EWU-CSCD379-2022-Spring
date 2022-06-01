@@ -62,7 +62,7 @@
       <v-row justify="center" class="mt-10">
         <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
           {{ gameResult.text }}
-          <v-btn class="ml-2" nuxt to="/index"> Quit </v-btn>
+          <v-btn class="ml-2" nuxt to="/"> Quit </v-btn>
         </v-alert>
       </v-row>
 
@@ -91,6 +91,7 @@ export default class DailyGame extends Vue {
   dialog: boolean = false
   playerName: string = ''
   playerGuid: string = ''
+  gameId: number = 0
   timeInSeconds: number = 0
   startTime: number = 0
   endTime: number = 0
@@ -125,6 +126,7 @@ export default class DailyGame extends Vue {
       })
       .then((response) => {
         this.word = response.data.word
+        this.gameId = response.data.gameId
         this.wordleGame = new WordleGame(this.word)
       })
       .catch(function (error) {
