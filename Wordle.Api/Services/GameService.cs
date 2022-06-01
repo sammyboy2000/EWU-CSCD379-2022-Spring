@@ -26,22 +26,20 @@ public class GameService
             .Include(x => x.Player)
             .Include(x => x.Guesses)
             .Include(x => x.Word)
-            .Take(1);
+            .First();
         
-        /*
-        if(game.First().Player.Guid.ToString() != playerGuid)
+        if(game.Player.Guid.ToString() != playerGuid)
         {
             return false;
         }
-        */
 
-        game.First().Guesses.Add(new Guess() { Value = guess });
-        _context.Update(game);
+        game.Guesses.Add(new Guess() { Value = guess });
+        _context.Games.Update(game);
         _context.SaveChanges();
 
         bool gameOver = false;
 
-        if(game.First().Word.Value == guess)
+        if(game.Word.Value == guess)
         {
             FinishGame(gameId);
             gameOver = true;
