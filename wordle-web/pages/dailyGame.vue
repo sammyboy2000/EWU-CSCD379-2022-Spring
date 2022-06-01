@@ -140,6 +140,8 @@ export default class DailyGame extends Vue {
       .catch(function (error) {
         alert(error)
       })
+      localStorage.setItem('playerGuid', this.playerGuid)
+      localStorage.setItem('gameId',  this.gameId.toString())
   }
 
   get gameResult() {
