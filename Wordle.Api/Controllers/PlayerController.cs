@@ -32,8 +32,7 @@ public class PlayersController : ControllerBase
     [HttpGet]
     public string ValidatePlayerGuid(string playerGuid = "getNewValidPlayerGuid")
     {
-        playerGuid = _service.validatePlayerGuid(playerGuid);
-        return playerGuid;
+        return _service.validatePlayerGuid(playerGuid);
     }
 
     [HttpPost]

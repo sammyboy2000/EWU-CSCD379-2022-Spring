@@ -185,7 +185,7 @@ export default class DailyGame extends Vue {
   }
 
   retrieveGuid() {
-    let guid = localStorage.getItem('playerGuid')
+    const guid = localStorage.getItem('playerGuid')
     if (guid == null) {
       // get new guid
       this.$axios
