@@ -3,6 +3,7 @@ using System.Linq;
 using static Wordle.Api.Data.Game;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using Wordle.Api.Controllers;
 
 namespace Wordle.Api.Services;
 
@@ -16,7 +17,30 @@ public class GameService
     {
         _context = context;
     }
-    
+
+    internal bool Update(string playerGuid, int gameId, string guess)
+    {
+        var game = _context
+            .Games
+            .Where(x => x.GameId == gameId)
+            .Include(x => x.Player)
+            .Include(x => x.Guesses)
+            .Include(x => x.Word)
+            .Take(1);
+
+        game.First().Guesses.Add(new Guess() { Value = guess });
+        _context.SaveChanges();
+
+        bool gameOver = false;
+
+        if(game.First().Word.Value == guess)
+        {
+            FinishGame(gameId);
+            gameOver = true;
+        }
+        return gameOver;
+    }
+
     public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
     {
 
@@ -94,19 +118,15 @@ public class GameService
         return chosenWord;
     }
 
-    public IEnumerable<DateWord?> GetLast10DateWords()
+    public IEnumerable<DateWord> GetLast10DateWords()
     {
         //Making sure the last ten days are initialized
-        for (var i = 0; i < 10; i++)
+        int numOfValidWords = 10;
+
+        for (var i = 0; i < numOfValidWords; i++)
         {
            yield return GetDailyDateWord(DateTime.UtcNow.AddDays(-i));
         }
-        /*
-        var result = _context.DateWords
-            .OrderByDescending(x => x.Date)
-            .Take(10);
-        return result;
-        */
     }
 
     public IEnumerable<(DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed)> CreateDataWordInfo(string playerGuid, bool hasGuid)
@@ -146,13 +166,13 @@ public class GameService
     }
     
 
-    public DateWord? GetDailyDateWord(DateTime date)
+    public DateWord GetDailyDateWord(DateTime date)
     {
-        //Sanitize the date by dropping time data
         if (date.ToUniversalTime() >= System.DateTime.Today.ToUniversalTime().AddDays(.75))
         {
-            return null;
+            return GetDailyDateWord(default); //I was not a fan of returning null so I just give people trying to play in the future the oldest dateword possible
         }
+        //Sanitize the date by dropping time data
         date = date.Date;
         //Check if the day has a word in the database
         if (_cache.TryGetValue(date, out DateWord? word))

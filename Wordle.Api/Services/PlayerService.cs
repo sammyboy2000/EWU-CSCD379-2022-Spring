@@ -1,4 +1,5 @@
-﻿using Wordle.Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Wordle.Api.Data;
 
 namespace Wordle.Api.Services;
 
@@ -26,18 +27,28 @@ public class PlayerService
 
     public IEnumerable<Player> GetPlayers()
     {
-        var result = _context.Players.OrderBy(x => x.Name);
+
+        var result = _context
+            .Players
+            .OrderBy(x => x.Name)
+            .Include(x => x.Games)
+            .ThenInclude(x => x.Word)
+            .Include(x => x.Games)
+            .ThenInclude(x => x.Guesses);
         return result;
     }
 
     public IEnumerable<Player> GetTop10Players()
     {
         var result = _context.Players
+            .Where(x => x.GameCount > 0)
             .OrderBy(x => x.AverageAttempts / x.GameCount)
             .ThenBy(x => x.AverageSecondsPerGame / x.GameCount)
             .ThenBy(x => x.AverageAttempts)
             .ThenByDescending(x => x.GameCount)
-            .Take(10);
+            .Take(10)
+            .Include(x => x.Games)
+            .ThenInclude(x => x.Guesses);
         return result;
     }
     public void Update(string name, string guid, int attempts, int seconds)
