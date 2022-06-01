@@ -19,7 +19,7 @@ export class WordleGame {
   readonly maxGuesses = 6
 
   get wordString(): string {
-    return this.word
+    return this.currentWord.text
   }
 
   get currentWord(): Word {
