@@ -27,8 +27,16 @@ public class GameService
             .Include(x => x.Guesses)
             .Include(x => x.Word)
             .Take(1);
+        
+        /*
+        if(game.First().Player.Guid.ToString() != playerGuid)
+        {
+            return false;
+        }
+        */
 
         game.First().Guesses.Add(new Guess() { Value = guess });
+        _context.Update(game);
         _context.SaveChanges();
 
         bool gameOver = false;
@@ -62,7 +70,7 @@ public class GameService
             var existingGame = _context.Games
                 .Include(x => x.Guesses)
                 .Include(x => x.Word)
-                .FirstOrDefault(x => x.PlayerId == player.PlayerId &&
+                .FirstOrDefault(x => x.Player.Guid == player.Guid &&
                                      x.GameType == GameTypeEnum.WordOfTheDay &&
                                      x.WordDate == date.Value);
             if (existingGame is not null)
