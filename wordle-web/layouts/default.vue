@@ -27,11 +27,15 @@
         </v-list-item>
 
         <v-list-item>
-          <v-btn text block nuxt to="/game">
-            Play <v-icon>mdi-controller-classic</v-icon></v-btn
+          <v-btn text block nuxt to="/dailyGame">
+            Play Daily<v-icon>mdi-controller-classic</v-icon></v-btn
           >
         </v-list-item>
-
+        <v-list-item>
+          <v-btn text block nuxt to="/game">
+            Play <v-icon>mdi-dice-5</v-icon></v-btn
+          >
+        </v-list-item>
         <v-list-item>
           <v-btn text block nuxt to="/about">
             About <v-icon>mdi-help-circle</v-icon></v-btn
@@ -47,6 +51,12 @@
         <v-list-item>
           <v-btn text block>
             <SettingsDialog />
+          </v-btn>
+        </v-list-item>
+
+        <v-list-item>
+          <v-btn text block>
+            <HowToPlayDialog />
           </v-btn>
         </v-list-item>
       </v-list>

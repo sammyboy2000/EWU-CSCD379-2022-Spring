@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
-using Wordle.Api.Data;
 using Wordle.Api.Services;
 
 namespace Wordle.Api.Tests;
@@ -26,7 +25,7 @@ public class PlayerServiceTests : DatabaseBaseTests
         // Add 20 players and their games.
         for (int x = 0; x < 20; x++)
         {
-            sut.Update($"Player {x}", (x % 5) +1, x);
+            sut.Update($"Player {x}", (x % 5) + 1, x);
         }
         Assert.AreEqual(10, sut.GetTop10Players().Count());
     }
