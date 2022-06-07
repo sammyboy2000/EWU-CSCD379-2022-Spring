@@ -4,37 +4,19 @@
       <v-row justify="center">
         <v-card loading>
           <v-card-title class="justify-center">
-            You're being exploited for ad revenue, please standby...
+            Game is Loading...
           </v-card-title>
-            <PrerollAd/>
         </v-card>
       </v-row>
     </v-container>
     <v-container v-if="isLoaded">
-      <v-row justify="center">
-        <v-col cols="5"></v-col>
-        <v-col cols="2" class="mt-0 mb-0 pt-0 pb-0">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-container>
-                <v-row justify="center">
-                  <v-btn
-                    color="primary"
-                    x-small
-                    nuxt
-                    to="/"
-                    fab
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon>mdi-home</v-icon>
-                  </v-btn>
-                </v-row>
-              </v-container>
-            </template>
-            <span> Go Home </span>
-          </v-tooltip>
-        </v-col>
+      <v-row justify="left">
+        <v-col cols="4">
+          <v-card-text align="right">
+            <v-icon>mdi-timer</v-icon>
+            {{ displayTimer() }}
+          </v-card-text></v-col
+        >
         <v-col cols="5" class="d-flex flex-row-reverse">
           <v-dialog v-model="dialog" justify-end persistent max-width="600px">
             <template #activator="{ on, attrs }">
@@ -67,21 +49,16 @@
           </v-dialog>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="3"></v-col>
-        <v-col cols="6" class="mt-0 mb-0 pt-0 pb-0">
+      <v-row v-if="!isSmall()">
+        <v-col cols="1"></v-col>
+        <v-col cols="10" class="mt-0 mb-0 pt-0 pb-0">
           <v-img
             src="logo.jpeg"
             class="center"
-            style="width: 400px; height: 100px"
+            style="max-width: 100%; height: auto"
           />
         </v-col>
-        <v-col cols="3">
-          <v-card-text align="right">
-            <v-icon>mdi-timer</v-icon>
-            {{ displayTimer() }}
-          </v-card-text>
-        </v-col>
+        <v-col cols="1"> </v-col>
       </v-row>
       <v-row justify="center" class="mt-10">
         <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
@@ -91,10 +68,13 @@
       </v-row>
 
       <v-row justify="center">
-        <game-board :wordleGame="wordleGame"/>
+        <game-board v-if="!isSmall()" :wordleGame="wordleGame" />
+        <smallGame-board v-if="isSmall()" :wordleGame="wordleGame" />
       </v-row>
       <v-row justify="center">
-        <keyboard :wordleGame="wordleGame"/>
+        <smallKeyboard v-if="isSmall()" :wordleGame="wordleGame" />
+        <keyboard v-if="!isSmall()" :wordleGame="wordleGame" />
+
       </v-row>
     </v-container>
   </v-container>
@@ -115,24 +95,27 @@ export default class Game extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
+  playerGuid: string = ''
   timeInSeconds: number = 0
   startTime: number = 0
   endTime: number = 0
   intervalID: any
   word: string = WordsService.getRandomWord()
   wordleGame = new WordleGame(this.word)
-
   isLoaded: boolean = false
 
-  mounted() {
-    if (!this.stopwatch.isRunning) {
-      this.stopwatch.Start();
-    }
-    this.retrieveUserName()
+  isSmall() {
+    return this.$vuetify.breakpoint.smAndDown
   }
 
-  displayTimer(): string {
-    return this.stopwatch.getFormattedTime();
+  mounted() {
+    setTimeout(() => {
+      this.isLoaded = true
+    }, 2000)
+    this.retrieveGuid()
+    this.retrieveUserName()
+    setTimeout(() => this.startTimer(), 5000) // delay is for initialization
+
   }
 
   resetGame() {
@@ -181,8 +164,26 @@ export default class Game extends Vue {
     }
   }
 
+  retrieveGuid() {
+    let guid = localStorage.getItem('playerGuid')
+    if (guid == null) {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    } else {
+      this.$axios
+        .get('/api/Players/ValidatePlayerGuid?playerGuid=' + guid)
+        .then((response) => {
+          this.playerGuid = response.data
+        })
+    }
+  }
+
   setUserName(userName: string) {
     localStorage.setItem('userName', userName)
+    localStorage.setItem('playerGuid', this.playerGuid)
     if (this.wordleGame.state === GameState.Won) {
       this.endGameSave()
     }
@@ -191,6 +192,7 @@ export default class Game extends Vue {
   endGameSave() {
     this.$axios.post('/api/Players', {
       name: this.playerName,
+      playerGuid: this.playerGuid,
       attempts: this.wordleGame.words.length,
       seconds: Math.round(this.stopwatch.currentTime / 1000),
     },);

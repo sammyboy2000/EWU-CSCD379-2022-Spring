@@ -12,6 +12,7 @@
           <v-btn
             class="pa-1 mx-3 my-1"
             elevation="8"
+            min-width="28px"
             :color="letterColor(char) == '' ? 'info' : letterColor(char)"
             style="
               background: linear-gradient(
@@ -35,9 +36,10 @@
         <v-btn
           :disabled="wordleGame.gameOver"
           class="float-left pa-1 ml-3"
+          min-width="0"
           @click="guessWord"
         >
-          Guess
+          <v-icon>mdi-fountain-pen-tip</v-icon>
         </v-btn>
       </v-col>
 
@@ -54,6 +56,8 @@
       <v-col cols="1">
         <v-btn
           :disabled="wordleGame.gameOver"
+          min-width="28px"
+          width="auto"
           class="float-right pa-1"
           @click="removeLetter"
         >
