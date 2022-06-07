@@ -33,45 +33,38 @@ public class GameService
             return false;
         }
 
-        game.Guesses.Add(new Guess() { Value = guess });
-        _context.Games.Update(game);
-        _context.SaveChanges();
 
-        bool gameOver = false;
-
-        if(game.Word.Value == guess)
+        public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
         {
-            FinishGame(gameId);
-            gameOver = true;
-        }
-        return gameOver;
-    }
+            var player = _context.Players
+                .FirstOrDefault(x => x.Guid == playerGuid);
+            if (player is null)
+            {
+                player = new Player { Guid = playerGuid };
+                _context.Players.Add(player);
+                //_context.SaveChanges();
+            }
 
-    public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
-    {
+            //Return the game if it already exists
+            Word word;
+            if (gameType == GameTypeEnum.WordOfTheDay)
+            {
+                if (date == null) throw new ArgumentException("Date cannot be null if the game type is WordOfTheDay");
 
-        var player = _context.Players
-            .FirstOrDefault(x => x.Guid == playerGuid);
-        if (player is null)
-        {
-            player = new Player { Guid = playerGuid };
-            _context.Players.Add(player);
-            _context.SaveChanges();
-        }
-
-        //Return the game if it already exists
-        Word word;
-        if (gameType == GameTypeEnum.WordOfTheDay)
-        {
-            if (date == null) throw new ArgumentException("Date cannot be null if the game type is WordOfTheDay");
-            
-            var existingGame = _context.Games
-                .Include(x => x.Guesses)
-                .Include(x => x.Word)
-                .FirstOrDefault(x => x.Player.Guid == player.Guid &&
-                                     x.GameType == GameTypeEnum.WordOfTheDay &&
-                                     x.WordDate == date.Value);
-            if (existingGame is not null)
+                var existingGame = _context.Games
+                    .Include(x => x.Guesses)
+                    .Include(x => x.Word)
+                    .FirstOrDefault(x => x.PlayerId == player.PlayerId &&
+                                         x.GameType == GameTypeEnum.WordOfTheDay &&
+                                         x.WordDate == date.Value.Date);
+                if (existingGame is not null)
+                {
+                    return existingGame;
+                }
+                // If this is a new game, get the word of the day.
+                word = GetDailyWord(date.Value) ?? throw new ArgumentException("Date is too far in the future");
+            }
+            else
             {
                 return existingGame;
             }
@@ -84,20 +77,20 @@ public class GameService
             word = GetWord();
         }
 
-        var game = new Game()
-        {
-            WordId = word.WordId,
-            PlayerId = player.PlayerId,
-            DateStarted = DateTime.UtcNow,
-            GameType = gameType,
-            WordDate = date
-        };
-        _context.Games.Add(game);
 
-        _context.SaveChanges();
+            var game = new Game()
+            {
+                WordId = word.WordId,
+                Player = player,
+                DateStarted = DateTime.UtcNow,
+                GameType = gameType,
+                WordDate = date?.Date
+            };
+            _context.Games.Add(game);
 
-        game.Word = word;
-        return game;
+            _context.SaveChanges();
+            game.Word = word;
+            return game;
 
     }
 
@@ -233,5 +226,46 @@ public class GameService
                 }
             }
         }
+
+        public bool SubmitGuess(string guess, DateTimeOffset localTime, int gameId, Guid playerGuid)
+        {
+            bool gameComplete;
+            //Validate gameId
+            var game = _context.Games
+                .Include(x => x.Word) //Include is required to access information from convenience methods
+                .FirstOrDefault(x => (x.GameId == gameId) && (x.Player.Guid == playerGuid));
+
+            if (game is null) throw new ArgumentException("Game does not exist");
+            if (game.DateEnded.HasValue) throw new ArgumentException("Game has already ended");
+
+            Guess incomingGuess = new()
+            {
+                Value = guess,
+                ClientDate = localTime,
+                GameId = gameId,
+                Date = DateTime.UtcNow
+            };
+
+            if (gameComplete = (game.Word.Value.ToLower() == guess.ToLower()))
+            {
+                incomingGuess.IsCorrect = true;
+                game.DateEnded = DateTime.UtcNow;
+            }
+
+            _context.Guesses.Add(incomingGuess);
+            _context.SaveChanges();
+
+            return gameComplete;
+        }
+        public IEnumerable<string?> GetWotdPlayers(int dailyWordId)
+        {
+            var dateWord = _context.DateWords
+                .Include(x => x.Word.Games)
+                .ThenInclude(x => x.Player)
+                .FirstOrDefault(x => x.WordId == dailyWordId);
+            if (dateWord is null) throw new ArgumentException("DateWord does not exist");
+            return dateWord.Word.Games.Select(x => x.Player.Name);
+        }
     }
+
 }

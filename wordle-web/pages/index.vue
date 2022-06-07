@@ -30,6 +30,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 
+
 @Component
 export default class IndexPage extends Vue {}
 </script>
@@ -39,3 +40,4 @@ export default class IndexPage extends Vue {}
           </v-btn> -->
 
 function getDay() { throw new Error('Function not implemented.') }
+
