@@ -1,21 +1,38 @@
-﻿using Wordle.Api.Data;
+using Wordle.Api.Data;
 using System.Linq;
 using static Wordle.Api.Data.Game;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using Wordle.Api.Controllers;
 
-namespace Wordle.Api.Services
+namespace Wordle.Api.Services;
+
+public class GameService
 {
-    public class GameService
-    {
-        private readonly AppDbContext _context;
-        private readonly static object _mutex = new();
-        private static readonly ConcurrentDictionary<DateTime, Word> _cache = new();
+    private readonly AppDbContext _context;
+    private readonly static object _mutex = new();
+    private static readonly ConcurrentDictionary<DateTime, DateWord> _cache = new();
 
-        public GameService(AppDbContext context)
+    public GameService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    internal bool Update(string playerGuid, int gameId, string guess)
+    {
+        var game = _context
+            .Games
+            .Where(x => x.GameId == gameId)
+            .Include(x => x.Player)
+            .Include(x => x.Guesses)
+            .Include(x => x.Word)
+            .FirstOrDefault();
+        
+        if(game is null || game.Player.Guid.ToString() != playerGuid)
         {
-            _context = context;
+            return false;
         }
+
 
         public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
         {
@@ -49,9 +66,17 @@ namespace Wordle.Api.Services
             }
             else
             {
-                // If this is a new game, get a random word.
-                word = GetWord();
+                return existingGame;
             }
+            // If this is a new game, get the word of the day.
+            word = GetDailyWord(date.Value) ?? throw new ArgumentException("Date is too far in the future");
+        }
+        else
+        {
+            // If this is a new game, get a random word.
+            word = GetWord();
+        }
+
 
             var game = new Game()
             {
@@ -67,78 +92,137 @@ namespace Wordle.Api.Services
             game.Word = word;
             return game;
 
-        }
+    }
 
-        public void FinishGame(int gameId)
+    public void FinishGame(int gameId)
+    {
+        var game = _context.Games
+            .FirstOrDefault(x => x.GameId == gameId);
+        if (game is null) throw new ArgumentException("Game does not exist");
+
+        game.DateEnded = DateTime.UtcNow;
+        _context.SaveChanges();
+    }
+
+    public Word GetWord()
+    {
+        int wordCount = _context.Words.Count(f => f.Common);
+        int randomIndex = new Random().Next(0, wordCount);
+        Word chosenWord = _context.Words
+            .Where(f => f.Common)
+            .OrderBy(w => w.WordId)
+            .Skip(randomIndex)
+            .Take(1)
+            .First();
+        return chosenWord;
+    }
+
+    public IEnumerable<DateWord> GetLast10DateWords()
+    {
+        //Making sure the last ten days are initialized
+        int numOfValidWords = 10;
+
+        for (var i = 0; i < numOfValidWords; i++)
         {
-            var game = _context.Games
-                .FirstOrDefault(x => x.GameId == gameId);
-            if (game is null) throw new ArgumentException("Game does not exist");
-
-            game.DateEnded = DateTime.UtcNow;
-            _context.SaveChanges();
+           yield return GetDailyDateWord(DateTime.UtcNow.AddDays(-i));
         }
+    }
 
-        public Word GetWord()
+    public IEnumerable<(DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed)> CreateDataWordInfo(string playerGuid, bool hasGuid)
+    {
+        foreach(DateWord dateword in GetLast10DateWords())
         {
-            int wordCount = _context.Words.Count(f => f.Common);
-            int randomIndex = new Random().Next(0, wordCount);
-            Word chosenWord = _context.Words
-                .Where(f => f.Common)
-                .OrderBy(w => w.WordId)
-                .Skip(randomIndex)
-                .Take(1)
-                .First();
-            return chosenWord;
-        }
+            var games = _context
+          .Games
+          .Include(x => x.Guesses)
+          .Include(x => x.Player)
+          .Where(x => x
+                        .GameType == Game.GameTypeEnum.WordOfTheDay
+                                     && x.DateEnded != null
+                                     && x.WordDate == dateword.Date);
+            
+            (DateTime date, int numPlays, int averageScore, int averageTime, bool hasPlayed) info;
 
-        public Word? GetDailyWord(DateTime date)
-        {
-            //Sanitize the date by dropping time data
-            date = date.Date;
-            if (date.ToUniversalTime() >= System.DateTime.Today.ToUniversalTime().AddDays(0.5))
+            info.date = dateword.Date;
+            info.numPlays = games.Count();
+            info.averageScore = (int)games.Select(x => x.Guesses.Count).ToList().DefaultIfEmpty().Average();
+            info.averageTime = (int)games.Select(x => ((x.DateEnded - x.DateStarted) ?? TimeSpan.MaxValue).TotalSeconds).ToList().DefaultIfEmpty().Average();
+            if (hasGuid)
             {
-                return null;
-            }
-            //Check if the day has a word in the database
-            if (_cache.TryGetValue(date, out var word))
-            {
-                return word;
-            }
-            DateWord? wordOfTheDay = _context.DateWords
-                .Include(x => x.Word)
-                .FirstOrDefault(dw => dw.Date == date);
-
-            if (wordOfTheDay != null)
-            //Yes: return the word
-            {
-                _cache.TryAdd(date, wordOfTheDay.Word);
-                return wordOfTheDay.Word;
+                info.hasPlayed = games.Any(x => x.Player.Guid.ToString() == playerGuid);
             }
             else
             {
-                //Mutex magic
-                lock (_mutex)
+                info.hasPlayed = false;
+            }
+            yield return info;
+        }
+    }
+
+    public Word? GetDailyWord(DateTime date)
+    {
+        return GetDailyDateWord(date)?.Word;
+    }
+    
+
+    public DateWord GetDailyDateWord(DateTime date)
+    {
+        if (date.ToUniversalTime() >= System.DateTime.Today.ToUniversalTime().AddDays(.75))
+        {
+            return GetDailyDateWord(default); //I was not a fan of returning null so I just give people trying to play in the future the oldest dateword possible
+        }
+        //Sanitize the date by dropping time data
+        date = date.Date;
+        //Check if the day has a word in the database
+        if (_cache.TryGetValue(date, out DateWord? word))
+        {
+            if (word is not null)
+            {
+                return word;
+            }
+        }
+        DateWord? wordOfTheDay = _context.DateWords
+            .Include(x => x.Word)
+            .FirstOrDefault(dw => dw.Date == date);
+
+        if (wordOfTheDay != null)
+        //Yes: return the word
+        {
+            _cache.TryAdd(date, wordOfTheDay);
+            return wordOfTheDay;
+        }
+        else
+        {
+            //Mutex magic
+            lock (_mutex)
+            {
+                wordOfTheDay = _context.DateWords
+                    .Include(x => x.Word)
+                    .FirstOrDefault(dw => dw.Date == date);
+                if (wordOfTheDay != null)
+                //Yes: return the word
                 {
+                    _cache.TryAdd(date, wordOfTheDay);
+                    return wordOfTheDay;
+                }
+                else
+                {
+                    //No: get a random word from our list
+                    Word chosenWord = GetWord();
+                    //Save the word to the database with the date
+                    _context.DateWords.Add(new DateWord { Date = date, Word = chosenWord });
+                    _context.SaveChanges();
+                    
                     wordOfTheDay = _context.DateWords
-                        .Include(x => x.Word)
-                        .FirstOrDefault(dw => dw.Date == date);
-                    if (wordOfTheDay != null)
+                    .Include(x => x.Word)
+                    .FirstOrDefault(dw => dw.Date == date);
+                    if(wordOfTheDay is null)
+                    {
+                        throw new DbUpdateException("Word of the day did not update.");
+                    }
                     //Yes: return the word
-                    {
-                        return wordOfTheDay.Word;
-                    }
-                    else
-                    {
-                        //No: get a random word from our list
-                        var chosenWord = GetWord();
-                        //Save the word to the database with the date
-                        _context.DateWords.Add(new DateWord { Date = date, Word = chosenWord });
-                        _context.SaveChanges();
-                        //Return the word
-                        _cache.TryAdd(date, chosenWord);
-                        return chosenWord;
-                    }
+                    _cache.TryAdd(date, wordOfTheDay);
+                    return wordOfTheDay;
                 }
             }
         }
