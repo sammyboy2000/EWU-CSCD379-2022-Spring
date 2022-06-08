@@ -6,7 +6,6 @@
           <v-card-title class="justify-center">
             Game is Loading...
           </v-card-title>
-          <PrerollAd />
         </v-card>
       </v-row>
     </v-container>
@@ -75,24 +74,24 @@
       <v-row justify="center">
         <smallKeyboard v-if="isSmall()" :wordleGame="wordleGame" />
         <keyboard v-if="!isSmall()" :wordleGame="wordleGame" />
+
       </v-row>
     </v-container>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { WordsService } from '~/scripts/wordsService'
-import { GameState, WordleGame } from '~/scripts/wordleGame'
+import {Component, Vue} from 'vue-property-decorator'
+import {WordsService} from '~/scripts/wordsService'
+import {GameState, WordleGame} from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
-import { Word } from '~/scripts/word'
-import { Stopwatch } from '~/scripts/stopwatch'
-import {JWT} from '~/scripts/jwt'
+import {Word} from '~/scripts/word'
+import {Stopwatch} from '~/scripts/stopwatch'
 
-@Component({ components: { KeyBoard, GameBoard } })
+@Component({components: {KeyBoard, GameBoard}})
 export default class Game extends Vue {
-  stopwatch: Stopwatch = new Stopwatch()
+  stopwatch: Stopwatch = new Stopwatch();
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
@@ -110,37 +109,19 @@ export default class Game extends Vue {
   }
 
   mounted() {
-    if (!this.stopwatch.isRunning) {
-      this.stopwatch.Start()
-    }
+    setTimeout(() => {
+      this.isLoaded = true
+    }, 2000)
     this.retrieveGuid()
     this.retrieveUserName()
-    this.$axios
-      .post('Token/GetToken', {
-        username: 'Admin@intellitect.com',
-        password: 'P@ssw0rd123',
-      })
-      .then((result) => {
-          JWT.setToken(result.data.token,this.$axios)
-        // console.log(result)
-         console.log(JWT.tokenData)
-        console.log(JWT.tokenData.roles)
-        // this.$axios.defaults.headers.common.Authorization =
-        //   'Bearer ' + result.data.token
-        this.$axios.get('Token/TestAdmin').then((result) => {
-          //console.log(result)
-        })
-      })
-  }
+    setTimeout(() => this.startTimer(), 5000) // delay is for initialization
 
-  displayTimer(): string {
-    return this.stopwatch.getFormattedTime()
   }
 
   resetGame() {
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
-    this.stopwatch.Start()
+    this.stopwatch.Start();
   }
 
   get gameResult() {
@@ -214,7 +195,7 @@ export default class Game extends Vue {
       playerGuid: this.playerGuid,
       attempts: this.wordleGame.words.length,
       seconds: Math.round(this.stopwatch.currentTime / 1000),
-    })
+    },);
   }
 }
 </script>
