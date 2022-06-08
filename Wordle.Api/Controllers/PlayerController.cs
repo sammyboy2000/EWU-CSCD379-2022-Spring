@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Wordle.Api.Data;
 using Wordle.Api.Services;
 
@@ -8,9 +8,9 @@ namespace Wordle.Api.Controllers;
 [ApiController]
 public class PlayersController : ControllerBase
 {
-    private readonly PlayerService _service;
+    private readonly PlayersService _service;
 
-    public PlayersController(PlayerService service)
+    public PlayersController(PlayersService service)
     {
         _service = service;
     }
@@ -28,13 +28,6 @@ public class PlayersController : ControllerBase
         return _service.GetTop10Players();
     }
 
-    [Route("[action]")]
-    [HttpGet]
-    public string ValidatePlayerGuid(string playerGuid = "getNewValidPlayerGuid")
-    {
-        return _service.validatePlayerGuid(playerGuid);
-    }
-
     [HttpPost]
     public IActionResult Post([FromBody] PlayerPost player)
     {
@@ -44,15 +37,13 @@ public class PlayersController : ControllerBase
             return BadRequest();
         }
         //how is the PlayerPost being created and how to you validate its input?
-        player.PlayerGuid = _service.validatePlayerGuid(player.PlayerGuid);
-        _service.Update(player.Name ?? "Guest", player.PlayerGuid, player.Attempts, player.Seconds);
-        return Ok(player.PlayerGuid);
+        _service.Update(player.Name ?? "Guest", player.Attempts, player.Seconds);
+        return Ok();
     }
 
     public class PlayerPost
     {
         public string? Name { get; set; }
-        public string PlayerGuid { get; set; }
         public int Attempts { get; set; }
         public int Seconds { get; set; }
     }

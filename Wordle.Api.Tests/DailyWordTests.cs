@@ -103,7 +103,6 @@ public class DailyWordTests : DatabaseBaseTests
         );
     }
 
-    [Ignore] //class fix broke it
     [TestMethod]
     [Ignore("Passes when running alone, fails when running with other tests")]
     public void GetDailyGameThatIsFinished()

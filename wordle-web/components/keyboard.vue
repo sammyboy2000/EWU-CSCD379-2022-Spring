@@ -1,13 +1,7 @@
 <template>
   <v-card class="ma-0 pa-0" color="transparent" flat>
-    <v-row v-for="(charRow, i) in chars" :key="i" justify="center" dense>
-      <v-col
-        v-for="char in charRow"
-        :key="char"
-        cols="1"
-        class="ma-0 pa-0"
-        dense
-      >
+    <v-row v-for="(charRow, i) in chars" :key="i" justify="center">
+      <v-col v-for="char in charRow" :key="char" cols="1" class="ma-0 pa-0">
         <v-container class="text-center ma-0 pa-0">
           <v-btn
             class="pa-1 mx-3 my-1"
@@ -31,7 +25,7 @@
     </v-row>
 
     <v-row justify="center">
-      <v-col cols="1">
+      <v-col cols="2">
         <v-btn
           :disabled="wordleGame.gameOver"
           class="float-left pa-1 ml-3"
@@ -43,7 +37,7 @@
 
       <v-col cols="8">
         <CandidateDisplay
-          class="pa-0 ml-2"
+          class="pa-0"
           :disable="wordleGame.gameOver"
           :candidatesArray="candidatesArray"
           :display.sync="render"
@@ -51,7 +45,7 @@
         />
       </v-col>
 
-      <v-col cols="1">
+      <v-col cols="2">
         <v-btn
           :disabled="wordleGame.gameOver"
           class="float-right pa-1"
@@ -120,20 +114,11 @@ export default class KeyBoard extends Vue {
       this.wordleGame.currentWord.length ===
       this.wordleGame.currentWord.maxLetters
     ) {
-      this.postGame(this.wordleGame.currentWord.text)
       this.wordleGame.submitWord()
       // this.wordleGame.currentWord
       this.candidatesArray = WordsService.validWords('')
       this.render = false
     }
-  }
-
-  postGame(str: string){
-    this.$axios.post('/api/Game', {
-        playerGuid: localStorage.getItem('playerGuid') ?? "no playerGuid",
-        gameId: Number(localStorage.getItem('gameId')),
-        guess: str
-      })
   }
 
   fillWord(str: string) {

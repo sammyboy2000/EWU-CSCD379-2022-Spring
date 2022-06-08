@@ -1,57 +1,34 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Wordle.Api.Data;
+﻿using Wordle.Api.Data;
 
 namespace Wordle.Api.Services;
 
-public class PlayerService
+public class PlayersService
 {
     private readonly AppDbContext _context;
 
-    public PlayerService(AppDbContext context)
+    public PlayersService(AppDbContext context)
     {
         _context = context;
     }
 
-    public string validatePlayerGuid(string guid)
-    {
-        Guid validGuid;
-
-        if (!Guid.TryParse(guid, out validGuid)) 
-        { 
-            validGuid = Guid.NewGuid(); 
-        }
-
-        return validGuid.ToString();
-        
-    }
-
     public IEnumerable<Player> GetPlayers()
     {
-
-        var result = _context
-            .Players
-            .OrderBy(x => x.Name)
-            .Include(x => x.Games)
-            .ThenInclude(x => x.Word)
-            .Include(x => x.Games)
-            .ThenInclude(x => x.Guesses);
+        var result = _context.Players.OrderBy(x => x.Name);
         return result;
     }
 
     public IEnumerable<Player> GetTop10Players()
     {
         var result = _context.Players
-            .Where(x => x.GameCount > 0)
             .OrderBy(x => x.AverageAttempts / x.GameCount)
             .ThenBy(x => x.AverageSecondsPerGame / x.GameCount)
             .ThenBy(x => x.AverageAttempts)
             .ThenByDescending(x => x.GameCount)
-            .Take(10)
-            .Include(x => x.Games)
-            .ThenInclude(x => x.Guesses);
+            .Take(10);
         return result;
     }
-    public void Update(string name, string guid, int attempts, int seconds)
+
+    public void Update(string name, int attempts, int seconds)
     {
         if (attempts < 1 || attempts > 6)
         {
@@ -63,10 +40,8 @@ public class PlayerService
         }
 
         var player2 = _context.Players;
-
-        Guid playerGuid = Guid.Parse(guid);
-
-        var player = player2.FirstOrDefault(x => x.Guid == playerGuid);
+        
+        var player = player2.FirstOrDefault(x => x.Name == name);
 
 
         if (player == null)
@@ -74,7 +49,6 @@ public class PlayerService
             _context.Players.Add(new Player()
             {
                 Name = name,
-                Guid = playerGuid,
                 GameCount = 1,
                 AverageAttempts = attempts,
                 AverageSecondsPerGame = seconds
@@ -82,7 +56,6 @@ public class PlayerService
         }
         else
         {
-            player.Name = name;
             player.AverageSecondsPerGame = (player.AverageSecondsPerGame * player.GameCount + seconds) / (player.GameCount + 1);
             player.AverageAttempts = (player.AverageAttempts * player.GameCount + attempts) / ++player.GameCount;
 

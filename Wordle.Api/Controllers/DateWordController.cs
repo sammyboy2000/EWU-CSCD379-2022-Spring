@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using Wordle.Api.Data;
@@ -9,7 +9,7 @@ using static Wordle.Api.Data.Game;
 namespace Wordle.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class DateWordController : Controller
 {
     private readonly GameService _gameService;
@@ -20,30 +20,10 @@ public class DateWordController : Controller
         _gameService = gameService;
     }
 
-    [HttpGet]
-    public IEnumerable<DateWordDto> Get(string playerGuid = "Fine if not a Guid")
-    {
-        bool hasGuid = false;
-        if(Guid.TryParse(playerGuid, out _)){
-            hasGuid = true;
-        }
-        
-        foreach (var I in _gameService.CreateDataWordInfo(playerGuid, hasGuid))
-        {
-            yield return new DateWordDto(I.date, I.numPlays, I.averageScore, I.averageTime, I.hasPlayed, hasGuid);
-        }
-        
-    }
-
-
-[HttpPost]
+    [HttpPost]
     public GameDto CreateGame([FromBody] CreateGameDto newGame)
     {
-        if (!Guid.TryParse(newGame.PlayerGuid, out _)) //done to catch invalid guids
-        {
-            newGame.PlayerGuid = Guid.NewGuid().ToString(); //Generate a fresh GUID if catching an invalid guid
-        }
-        Game game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
+        var game = _gameService.CreateGame(new Guid(newGame.PlayerGuid), GameTypeEnum.WordOfTheDay, newGame.Date);
         return new GameDto(game);
     }
 

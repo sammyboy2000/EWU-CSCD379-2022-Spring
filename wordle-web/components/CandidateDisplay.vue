@@ -6,7 +6,6 @@
           class="d-flex justify-center"
           color="transparent"
           height="120px"
-          width="100%"
           flat
         >
           <v-btn
@@ -21,6 +20,7 @@
             v-else
             max-height="120px"
             width="100%"
+            dense
             class="overflow-y-auto"
           >
             <v-list-item

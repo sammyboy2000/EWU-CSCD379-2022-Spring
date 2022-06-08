@@ -23,8 +23,7 @@ var allowAll = builder.Services.AddCors(options => {
 
 
 // Add services to the container.
-builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -59,7 +58,7 @@ builder.Services.AddScoped<ILeaderBoardService, LeaderBoardServiceMemory>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ScoreStatsService>();
-builder.Services.AddScoped<PlayerService>();
+builder.Services.AddScoped<PlayersService>();
 builder.Services.AddScoped<GameService>();
 
 //Identity stuff
@@ -99,7 +98,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
-    PlayerService.Seed(context);
+    PlayersService.Seed(context);
     Word.SeedWords(context);
     await IdentitySeed.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>(),
         scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());

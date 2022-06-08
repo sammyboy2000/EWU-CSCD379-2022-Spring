@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row justify="center">
       <v-col cols="8">
         <v-card color="transparent" flat>
@@ -11,10 +11,6 @@
               <v-btn nuxt to="/game" color="primary" x-large width="200px">
                 Play
               </v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-card color="transparent" flat>
-            <v-card-actions class="justify-center">
               <v-btn nuxt to="/dailyGame" color="primary" x-large width="200px">
                 Play The Daily
               </v-btn>
