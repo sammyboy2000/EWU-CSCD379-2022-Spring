@@ -128,12 +128,12 @@ export default class KeyBoard extends Vue {
     }
   }
 
-  postGame(str: string){
+  postGame(str: string) {
     this.$axios.post('/api/Game', {
-        playerGuid: localStorage.getItem('playerGuid') ?? "no playerGuid",
-        gameId: Number(localStorage.getItem('gameId')),
-        guess: str
-      })
+      playerGuid: localStorage.getItem('playerGuid') ?? 'no playerGuid',
+      gameId: Number(localStorage.getItem('gameId')),
+      guess: str,
+    })
   }
 
   fillWord(str: string) {

@@ -10,6 +10,5 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class InspirePage extends Vue{
-}
+export default class InspirePage extends Vue {}
 </script>

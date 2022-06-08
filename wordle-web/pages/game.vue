@@ -6,7 +6,6 @@
           <v-card-title class="justify-center">
             Game is Loading...
           </v-card-title>
-          <PrerollAd />
         </v-card>
       </v-row>
     </v-container>
@@ -88,7 +87,7 @@ import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 import { Stopwatch } from '~/scripts/stopwatch'
-import {JWT} from '~/scripts/jwt'
+import { JWT } from '~/scripts/jwt'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
@@ -112,6 +111,7 @@ export default class Game extends Vue {
   mounted() {
     if (!this.stopwatch.isRunning) {
       this.stopwatch.Start()
+      this.isLoaded = true
     }
     this.retrieveGuid()
     this.retrieveUserName()
@@ -121,14 +121,14 @@ export default class Game extends Vue {
         password: 'P@ssw0rd123',
       })
       .then((result) => {
-          JWT.setToken(result.data.token,this.$axios)
+        JWT.setToken(result.data.token, this.$axios)
         // console.log(result)
-         console.log(JWT.tokenData)
+        console.log(JWT.tokenData)
         console.log(JWT.tokenData.roles)
         // this.$axios.defaults.headers.common.Authorization =
         //   'Bearer ' + result.data.token
         this.$axios.get('Token/TestAdmin').then((result) => {
-          //console.log(result)
+          // console.log(result)
         })
       })
   }
@@ -184,7 +184,7 @@ export default class Game extends Vue {
   }
 
   retrieveGuid() {
-    let guid = localStorage.getItem('playerGuid')
+    const guid = localStorage.getItem('playerGuid')
     if (guid == null) {
       this.$axios
         .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')

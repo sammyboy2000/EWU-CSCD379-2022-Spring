@@ -33,7 +33,11 @@
               Home <v-icon>mdi-home</v-icon></v-btn
             >
           </v-list-item>
-
+          <v-list-item>
+            <v-btn text block>
+              <login-dialog />
+            </v-btn>
+          </v-list-item>
           <v-list-item>
             <v-btn text block nuxt to="/dailyGame">
               Play Daily<v-icon>mdi-controller-classic</v-icon></v-btn

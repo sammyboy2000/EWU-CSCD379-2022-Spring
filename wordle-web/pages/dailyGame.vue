@@ -9,13 +9,14 @@
         </v-card>
       </v-row>
     </v-container>
-  <v-container v-if="wasPlayed">
-    <v-card-title class="justify-center">
-            You may have already played this game.  <v-btn class="ml-2" nuxt to="/"> Quit </v-btn>
-          </v-card-title>
-  </v-container>
+    <v-container v-if="wasPlayed">
+      <v-card-title class="justify-center">
+        You may have already played this game.
+        <v-btn class="ml-2" nuxt to="/"> Quit </v-btn>
+      </v-card-title>
+    </v-container>
 
-    <v-container v-if="!wasPlayed" >
+    <v-container v-if="!wasPlayed">
       <v-row justify="left">
         <v-col cols="4">
           <v-card-text align="right">
