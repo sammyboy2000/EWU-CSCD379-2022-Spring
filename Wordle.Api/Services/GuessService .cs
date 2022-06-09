@@ -20,22 +20,18 @@ public class GuessService
 
     internal int GetWordListCount(string partialWord)
     {
-        var word = partialWord.ToCharArray(); 
-        int num = partialWord.Length;
-        return num;
+        return _context
+            .Words
+            .Where(x => x.Value.StartsWith(partialWord))
+            .Count();
     }
 
     internal IEnumerable<string> GetWordList(string partialWord)
     {
-        List<string> wordList = new();
-        wordList.Add(partialWord);
-        wordList.Add("is");
-        wordList.Add("the");
-        wordList.Add("word");
-        wordList.Add("that");
-        wordList.Add("was");
-        wordList.Add("submitted");
-
-        return wordList.AsEnumerable();
+        return _context
+            .Words
+            .Select(x => x.Value)
+            .Where(x => x.StartsWith(partialWord))
+            .AsEnumerable();
     }
 }

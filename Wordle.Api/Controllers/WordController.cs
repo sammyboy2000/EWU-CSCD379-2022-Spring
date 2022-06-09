@@ -15,15 +15,16 @@ public class WordController : ControllerBase
         _service = service;
     }
 
+    [Route("[action]")]
     [HttpGet]
-    public int GetWordCount(string partialWord = "Default")
+    public int GetWordCount(string partialWord)
     {
         return _service.GetWordListCount(partialWord);
     }
 
     [Route("[action]")]
     [HttpGet]
-    public IEnumerable<string> GetWordList(string partialWord = "Default")
+    public IEnumerable<string> GetWordList(string partialWord)
     {
         return _service.GetWordList(partialWord);
     }
