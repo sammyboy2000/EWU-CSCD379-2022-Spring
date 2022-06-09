@@ -17,18 +17,25 @@ public class WordService
         _context = context;
     }
 
-    internal IEnumerable<string> GetWordListPage(string partialWord, int page, int count)
+    internal IEnumerable<string> GetWordListPage(string partialWord, int page, int pageSize)
     {
         return _context
             .Words
             .Select(x => x.Value)
             .Where(x => x.StartsWith(partialWord))
+            .Skip(page * pageSize)
+            .Take(pageSize)
             .AsEnumerable();
     }
 
-    internal IEnumerable<string> GetAllWordListPage(int page, int count)
+    internal IEnumerable<string> GetAllWordListPage(int page, int pageSize)
     {
-        return _context.Words.Select(x => x.Value).AsEnumerable();
+        return _context
+            .Words
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .Select(x => x.Value)
+            .AsEnumerable();
     }
 
     internal int GetNumberOfPages(double count)
