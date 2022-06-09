@@ -34,4 +34,11 @@ public class GuessService
             .Where(x => x.StartsWith(partialWord))
             .AsEnumerable();
     }
+
+    internal IEnumerable<string> GetWordListPage(int page, int count)
+    {
+        List<string> words = new();
+        words.Add("not working");
+        return words.AsEnumerable();
+    }
 }
