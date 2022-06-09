@@ -8,34 +8,39 @@ namespace Wordle.Api.Controllers;
 [ApiController]
 public class WordController : ControllerBase
 {
-    private readonly GuessService _guessService;
     private readonly WordService _wordService;
 
-    public WordController(GuessService guessService, WordService wordService)
+    public WordController( WordService wordService)
     {
-        _guessService = guessService;
         _wordService = wordService;
     }
 
     [Route("[action]")]
     [HttpGet]
-    public int GetWordCount(string partialWord)
+    public IEnumerable<string> GetWordListPage(string partialWord, int page, int count)
     {
-        return _guessService.GetWordListCount(partialWord);
+        return _wordService.GetWordListPage(partialWord, page, count);
     }
 
     [Route("[action]")]
     [HttpGet]
-    public IEnumerable<string> GetWordList(string partialWord)
+    public IEnumerable<string> GetAllWordListPage(int page, int count)
     {
-        return _guessService.GetWordList(partialWord);
+        return _wordService.GetAllWordListPage(page, count);
     }
 
     [Route("[action]")]
     [HttpGet]
-    public IEnumerable<string> GetWordListPage(int page, int count)
+    public int GetNumberOfPages(string partialWord, int count)
     {
-        return _guessService.GetWordListPage(page, count);
+        return _wordService.GetNumberOfPages(partialWord, (double)count);
+    }
+
+    [Route("[action]")]
+    [HttpGet]
+    public int GetAllNumberOfPages(int count)
+    {
+        return _wordService.GetNumberOfPages((double) count);
     }
 
     [Route("[action]")]
