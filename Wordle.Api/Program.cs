@@ -62,6 +62,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 builder.Services.AddScoped<ScoreStatsService>();
 builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<GuessService>();
 
 //Identity stuff
 builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
