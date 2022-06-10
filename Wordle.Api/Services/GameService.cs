@@ -21,7 +21,7 @@ namespace Wordle.Api.Services
         {
             var game = _context
                 .Games
-                .Where(x => x.GameId == gameId)
+                .Where(x => x.GameId == gameId && !x.Word.Deleted)
                 .Include(x => x.Player)
                 .Include(x => x.Guesses)
                 .Include(x => x.Word)
@@ -113,10 +113,9 @@ namespace Wordle.Api.Services
             int wordCount = _context.Words.Count(f => f.Common);
             int randomIndex = new Random().Next(0, wordCount);
             Word chosenWord = _context.Words
-                .Where(f => f.Common)
+                .Where(f => f.Common && !f.Deleted)
                 .OrderBy(w => w.WordId)
                 .Skip(randomIndex)
-                .Take(1)
                 .First();
             return chosenWord;
         }

@@ -7,8 +7,9 @@ public class Word
 {
     public int WordId { get; set; }
     public string Value { get; set; } = null!;
-    public bool Common { get; set; }
+    public bool Common { get; set; } = false;
     public ICollection<Game> Games { get; set; } = null!;
+    public bool Deleted { get; set; } = false;
     public static void SeedWords(AppDbContext context, string filename = "Words.csv")
     {
         const string wordListVersion = "1"; // Increment this to force the file to read again on startup

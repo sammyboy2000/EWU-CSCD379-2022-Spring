@@ -49,7 +49,7 @@ public class WordController : ControllerBase
     {
         bool success = false;
 
-        //success = _wordService.DeleteWord(word);
+        success = _wordService.DeleteWord(word);
 
         return Ok(success);
     }
@@ -60,6 +60,8 @@ public class WordController : ControllerBase
     {
         bool success = false;
 
+        success = _wordService.AddWord(word);
+
         return Ok(success);
     }
 
@@ -69,6 +71,8 @@ public class WordController : ControllerBase
     {
         bool success = false;
 
+        success = _wordService.MakeWordCommon(word);
+
         return Ok(success);
     }
 
@@ -77,6 +81,8 @@ public class WordController : ControllerBase
     public IActionResult MakeWordUncommon(string word)
     {
         bool success = false;
+
+        success = _wordService.MakeWordUncommon(word);
 
         return Ok(success);
     }
