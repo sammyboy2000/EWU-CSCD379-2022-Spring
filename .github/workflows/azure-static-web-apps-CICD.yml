@@ -55,5 +55,3 @@ jobs:
           skip_app_build: true
           skip_api_build: true
           ###### End of Repository/Build Configurations ######
-
-          

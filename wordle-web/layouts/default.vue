@@ -67,6 +67,12 @@
           </v-list-item>
 
           <v-list-item>
+            <v-btn text block nuxt to="/wordList">
+              Word List<v-icon>mdi-clipboard-list-outline</v-icon>
+            </v-btn>
+          </v-list-item>
+
+          <v-list-item>
             <v-btn text block>
               <SettingsDialog />
             </v-btn>
