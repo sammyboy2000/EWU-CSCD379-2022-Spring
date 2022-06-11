@@ -1,6 +1,13 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-card>
+    <v-card v-if="!gotResponse">
+      <v-card-title class="display-5 justify-center">
+        Have you played a game yet?
+      </v-card-title>
+      <v-card-text> Please play a game then try again. </v-card-text>
+    </v-card>
+
+    <v-card v-if="gotResponse">
       <v-card-title class="display-3 justify-center">
         Daily Games
       </v-card-title>
@@ -53,6 +60,7 @@ export default class leaderboard extends Vue {
   dateWords: any = []
   title: string = ''
   playerGuid: string = ''
+  gotResponse: boolean = false
 
   created() {
     this.retrieveGuid()
@@ -79,12 +87,14 @@ export default class leaderboard extends Vue {
         .get('/api/Players/ValidatePlayerGuid?playerGuid=invalid')
         .then((response) => {
           this.playerGuid = response.data
+          this.gotResponse = true
         })
     } else {
       this.$axios
         .get('/api/Players/ValidatePlayerGuid?playerGuid=' + guid)
         .then((response) => {
           this.playerGuid = response.data
+          this.gotResponse = true
         })
     }
   }
