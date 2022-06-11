@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-card>
+    <v-card width="50%">
       <v-card-title class="display-3 justify-center"> Word List </v-card-title>
       <v-card-text class="text-center">
         {{ title }}
@@ -12,35 +12,50 @@
           <thead>
             <tr>
               <th>Word</th>
-              <th style="text-align: center"></th>
-              <th style="text-align: center"></th>
               <th style="text-align: center">Options</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="word in words" :key="word">
               <td>{{ word }}</td>
-              <td style="text-align: center"></td>
-              <td style="text-align: center">
-                <!--{{ player.averageAttempts.toFixed(2) }} -->
-              </td>
               <td style="text-align: center">
                 <!--{{ player.averageSecondsPerGame }} -->
               </td>
             </tr>
           </tbody>
-          <tfoot>
-            <tr>
+        </v-simple-table>
+        <v-row>
+          <v-col>
             <v-pagination
-              v-model="page"
+              v-model.number="page"
               :length="pages"
               @input="update"
             ></v-pagination>
-            <v-spacer />
-            <v-text-field v-model="perPage" maxlength="4" dense filled></v-text-field>
-            </tr>
-          </tfoot>
-        </v-simple-table>
+          </v-col>
+        </v-row>
+        <v-spacer />
+        <v-row>
+          <v-col cols="6">
+            <v-text-field
+              v-model.number="perPage"
+              maxlength="4"
+              type="number"
+              label="Words per Page"
+              dense
+              filled
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field
+              v-model.number="page"
+              maxlength="7"
+              type="number"
+              label="Current Page"
+              dense
+              filled
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </v-card-text>
 
       <!-- <v-card-actions>
@@ -72,16 +87,22 @@ export default class wordlist extends Vue {
     this.title = `Search for words that start with ${this.searchterm}`
     this.update()
   }
+
   @Watch('perPage')
-    onPerPageChanged() {
-      this.update()
-    }
-  
+  onPerPageChanged() {
+    this.update()
+  }
+
+  @Watch('page')
+  onPageChanged() {
+    this.update()
+  }
+
   update() {
     if (this.searchterm === '') {
-      this.getSearch()
-    } else {
       this.getAllWords()
+    } else {
+      this.getSearch()
     }
   }
 
@@ -91,9 +112,11 @@ export default class wordlist extends Vue {
 
   getAllWords() {
     this.title = 'Search for words that start with:'
-    this.$axios.get('/api/Word/GetNumberOfPages').then((response) => {
-      this.pages = response.data
-    })
+    this.$axios
+      .get('/api/Word/GetAllNumberOfPages?count=' + this.perPage)
+      .then((response) => {
+        this.pages = response.data
+      })
     this.$axios
       .get(
         `/api/Word/GetAllWordListPage?page=${this.page - 1}&count=${
