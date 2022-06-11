@@ -4,7 +4,7 @@
 
 namespace Wordle.Api.Migrations
 {
-    public partial class AddDeletedToWord : Migration
+    public partial class AddDeletedColumnToWord : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,6 @@ namespace Wordle.Api.Migrations
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
-
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
