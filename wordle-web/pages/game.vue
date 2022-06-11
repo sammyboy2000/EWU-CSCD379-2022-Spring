@@ -122,14 +122,7 @@ export default class Game extends Vue {
       })
       .then((result) => {
         JWT.setToken(result.data.token, this.$axios)
-        // console.log(result)
-        console.log(JWT.tokenData)
-        console.log(JWT.tokenData.roles)
-        // this.$axios.defaults.headers.common.Authorization =
-        //   'Bearer ' + result.data.token
-        this.$axios.get('Token/TestAdmin').then((result) => {
-          // console.log(result)
-        })
+        this.$axios.get('Token/TestAdmin').then((result) => {})
       })
   }
 
