@@ -7,10 +7,9 @@ on:
   push:
     branches:
       - main
-      - 'Assignment*'
+      - "Assignment*"
     paths:
-      - 'Wordle.Api/**'
-      - '.github/workflows/main_wordleapiclass.yml'
+      - 'Wordle.api/**'
   workflow_dispatch:
 
 jobs:
@@ -68,7 +67,6 @@ jobs:
   deploy:
     runs-on: windows-latest
     needs: build
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
