@@ -1,5 +1,8 @@
 <template>
   <v-container fluid fill-height justify-center>
+    <v-alert v-if="authorized" type="primary"
+      >Welcome, Master Of The Universe</v-alert
+    >
     <v-card width="50%">
       <v-card-title class="display-3 justify-center"> Word List </v-card-title>
       <v-card-text class="text-center">
@@ -45,6 +48,7 @@
             <v-pagination
               v-model.number="page"
               :length="pages"
+              total-visible="10"
               @input="update"
             ></v-pagination>
           </v-col>
