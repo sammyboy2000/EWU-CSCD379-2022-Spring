@@ -94,6 +94,7 @@ export default class wordlist extends Vue {
   page: number = 1
   perPage: number = 10
   pages: number = 1
+  token: JWT = new JWT()
   roles: string[] = ['Not', 'Authorized']
   authorized: boolean = false
 
@@ -111,6 +112,11 @@ export default class wordlist extends Vue {
   @Watch('page')
   onPageChanged() {
     this.update()
+  }
+
+  @Watch('pages')
+  onPagesChanged() {
+    this.page = 1
   }
 
   update() {
@@ -154,6 +160,11 @@ export default class wordlist extends Vue {
   }
 
   getSearch() {
+    this.$axios
+      .get(`/api/Word/GetNumberOfPages?partialWord=${this.searchterm}&count=${this.perPage}`)
+      .then((response) => {
+        this.pages = response.data
+      })
     this.$axios
       .get(
         `/api/Word/GetWordListPage?partialWord=${this.searchterm}&page=${
