@@ -1,9 +1,9 @@
 <template>
   <v-container fluid fill-height justify-center>
-    <v-alert v-if="authorized" type="primary"
-      >Welcome, Master Of The Universe</v-alert
-    >
-    <v-card width="50%">
+    <v-card width="50%" class="text-center">
+      <v-alert v-if="authorized" type="primary"
+        >Welcome, Master Of The Universe</v-alert
+      >
       <v-card-title class="display-3 justify-center"> Word List </v-card-title>
       <v-card-text class="text-center">
         {{ title }}
@@ -94,7 +94,6 @@ export default class wordlist extends Vue {
   page: number = 1
   perPage: number = 10
   pages: number = 1
-  token: JWT = new JWT()
   roles: string[] = ['Not', 'Authorized']
   authorized: boolean = false
 
@@ -127,7 +126,10 @@ export default class wordlist extends Vue {
     JWT.setToken(localStorage.getItem('token'), this.$axios)
     this.roles = JWT.tokenData.roles
     if (this.roles != null) {
-      if (this.roles.includes('MasterOfTheUniverse')) {
+      if (
+        this.roles.includes('MasterOfTheUniverse') &&
+        JWT.tokenData.age >= 21
+      ) {
         this.authorized = true
       }
     }
@@ -170,7 +172,7 @@ export default class wordlist extends Vue {
         .then((response) => {
           if (!response.data) {
             alert('Vote Failed')
-          }
+          } else alert('Vote Successful')
         })
     }
   }
@@ -182,7 +184,7 @@ export default class wordlist extends Vue {
         .then((response) => {
           if (!response.data) {
             alert('Vote Failed')
-          }
+          } else alert('Vote Successful')
         })
     }
   }
