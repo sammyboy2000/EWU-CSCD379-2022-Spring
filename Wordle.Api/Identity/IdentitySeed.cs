@@ -25,17 +25,22 @@ namespace Wordle.Api.Identity
             {
                 await roleManager.CreateAsync(new IdentityRole(Roles.Grant));
             }
+            if (!await roleManager.RoleExistsAsync(Roles.MasterOfTheUniverse))
+            {
+                await roleManager.CreateAsync(new IdentityRole(Roles.MasterOfTheUniverse));
+            }
         }
 
         private static async Task SeedAdminUserAsync(UserManager<AppUser> userManager)
         {
-            // Seed Admin User
+            // Seed Admin/Grant User
             if (await userManager.FindByNameAsync("Admin@intellitect.com") == null)
             {
                 AppUser user = new AppUser
                 {
                     UserName = "Admin@intellitect.com",
                     Email = "Admin@intellitect.com",
+                    Birthday = new DateTime(2000, 12, 24),
                 };
 
                 IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
@@ -45,6 +50,66 @@ namespace Wordle.Api.Identity
                     await userManager.AddToRoleAsync(user, Roles.Admin);
                     await userManager.AddToRoleAsync(user, Roles.Grant);
                 }
+
+            }
+
+            // Seed Administrator not Grant User
+            if (await userManager.FindByNameAsync("Administrator@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "Administrator@intellitect.com",
+                    Email = "Administrator@intellitect.com",
+                    Birthday = new DateTime(1111, 11, 11),
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                }
+
+            }
+
+            // Seed Orko User
+            if (await userManager.FindByNameAsync("Orko@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "Orko@intellitect.com",
+                    Email = "Orko@intellitect.com",
+                    Birthday = new DateTime(2020, 1, 21),
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
+                }
+
+            }
+
+            // Seed HeMan User
+            if (await userManager.FindByNameAsync("HeMan@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "HeMan@intellitect.com",
+                    Email = "HeMan@intellitect.com",
+                    Birthday = new DateTime(1983, 11, 5),
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
+
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
+                }
+
             }
         }
     }
