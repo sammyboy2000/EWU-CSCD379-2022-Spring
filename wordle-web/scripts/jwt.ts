@@ -17,12 +17,15 @@ export class JWT {
   private static tokenInstance: string
   private static _tokenData: WordleToken
 
-  public static setToken(token: string, axios: NuxtAxiosInstance) {
-    this.tokenInstance = token
-    axios.setHeader('Authorization', `Bearer ${token}`)
-    const parts = token.split('.')
-    const payload = JSON.parse(atob(parts[1]))
-    this._tokenData = Object.assign(new WordleToken(), payload)
+  public static setToken(token: string | null, axios: NuxtAxiosInstance) {
+    if (token != null) {
+      this.tokenInstance = token
+      localStorage.setItem('token', this.tokenInstance)
+      axios.setHeader('Authorization', `Bearer ${token}`)
+      const parts = token.split('.')
+      const payload = JSON.parse(atob(parts[1]))
+      this._tokenData = Object.assign(new WordleToken(), payload)
+    }
   }
 
   public static getToken(): string {

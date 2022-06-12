@@ -6,20 +6,36 @@
         {{ title }}
         <v-text-field v-model="searchterm" maxlength="5" dense filled>
         </v-text-field>
+        <v-card-text v-if="authorized" class="text-center">
+          Word not in this list?
+
+          <v-btn @click="addWord(searchterm)"> Add Word </v-btn>
+        </v-card-text>
       </v-card-text>
       <v-card-text>
         <v-simple-table>
           <thead>
             <tr>
               <th>Word</th>
-              <th style="text-align: center">Options</th>
+              <th style="text-align: center">Is this word common?</th>
+              <th v-if="authorized" style="text-align: center">Delete?</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="word in words" :key="word">
               <td>{{ word }}</td>
               <td style="text-align: center">
-                <!--{{ player.averageSecondsPerGame }} -->
+                <v-btn icon @click="voteUncommon(word)">
+                  <v-icon>mdi-thumb-down</v-icon></v-btn
+                >
+                <v-btn icon @click="voteCommon(word)">
+                  <v-icon>mdi-thumb-up</v-icon></v-btn
+                >
+              </td>
+              <td v-if="authorized" style="text-align: center">
+                <v-btn icon @click="deleteWord(word)">
+                  <v-icon>mdi-delete</v-icon></v-btn
+                >
               </td>
             </tr>
           </tbody>
@@ -57,20 +73,13 @@
           </v-col>
         </v-row>
       </v-card-text>
-
-      <!-- <v-card-actions>
-        <v-btn color="primary" @click="getAllPlayers"> Get All Players </v-btn>
-        <v-spacer />
-        <v-btn color="primary" @click="getTop10Players">
-          Get Top 10 Players
-        </v-btn>
-      </v-card-actions> -->
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import { JWT } from '~/scripts/jwt'
 
 @Component({})
 export default class wordlist extends Vue {
@@ -81,6 +90,9 @@ export default class wordlist extends Vue {
   page: number = 1
   perPage: number = 10
   pages: number = 1
+  token: JWT = new JWT()
+  roles: string[] = ['Not', 'Authorized']
+  authorized: boolean = false
 
   @Watch('searchterm')
   onSearchChanged() {
@@ -108,6 +120,13 @@ export default class wordlist extends Vue {
 
   created() {
     this.getAllWords()
+    JWT.setToken(localStorage.getItem('token'), this.$axios)
+    this.roles = JWT.tokenData.roles
+    if (this.roles != null) {
+      if (this.roles.includes('MasterOfTheUniverse')) {
+        this.authorized = true
+      }
+    }
   }
 
   getAllWords() {
@@ -138,6 +157,52 @@ export default class wordlist extends Vue {
       .then((response) => {
         this.words = response.data
       })
+  }
+
+  voteCommon(word: string) {
+    if (word.length === 5) {
+      this.$axios
+        .post(`/api/Word/MakeWordCommon?word=${word}`)
+        .then((response) => {
+          if (!response.data) {
+            alert('Vote Failed')
+          }
+        })
+    }
+  }
+
+  voteUncommon(word: string) {
+    if (word.length === 5) {
+      this.$axios
+        .post(`/api/Word/MakeWordUncommon?word=${word}`)
+        .then((response) => {
+          if (!response.data) {
+            alert('Vote Failed')
+          }
+        })
+    }
+  }
+
+  deleteWord(word: string) {
+    if (word.length === 5) {
+      this.$axios.post(`/api/Word/DeleteWord?word=${word}`).then((response) => {
+        if (response.data) {
+          alert('Delete Successful')
+          window.location.reload()
+        } else alert('Delete Failed')
+      })
+    } else alert('Delete Failed')
+  }
+
+  addWord(word: string) {
+    if (word.length === 5) {
+      this.$axios.post(`/api/Word/AddWord?word=${word}`).then((response) => {
+        if (response.data) {
+          alert('Add Successful')
+          window.location.reload()
+        } else alert('Add Failed')
+      })
+    } else alert('Add Failed')
   }
 }
 </script>

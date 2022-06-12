@@ -87,7 +87,6 @@ import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 import { Stopwatch } from '~/scripts/stopwatch'
-import { JWT } from '~/scripts/jwt'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
@@ -115,15 +114,6 @@ export default class Game extends Vue {
     }
     this.retrieveGuid()
     this.retrieveUserName()
-    this.$axios
-      .post('Token/GetToken', {
-        username: 'Admin@intellitect.com',
-        password: 'P@ssw0rd123',
-      })
-      .then((result) => {
-        JWT.setToken(result.data.token, this.$axios)
-        this.$axios.get('Token/TestAdmin').then((result) => {})
-      })
   }
 
   displayTimer(): string {

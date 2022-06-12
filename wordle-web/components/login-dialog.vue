@@ -51,7 +51,7 @@ export default class LoginDialog extends Vue {
       })
       .then((result) => {
         JWT.setToken(result.data.token, this.$axios)
-        this.$axios.get('Token/TestAdmin').then((result) => {
+        this.$axios.get('Token/TestAdmin').then(() => {
           this.dialog = false
         })
       })
