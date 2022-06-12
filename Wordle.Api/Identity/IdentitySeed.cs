@@ -111,6 +111,23 @@ namespace Wordle.Api.Identity
                 }
 
             }
+
+            // Seed Guest with Grant Role User
+            if (await userManager.FindByNameAsync("Guest@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "Guest@intellitect.com",
+                    Email = "Guest@intellitect.com",
+                    Birthday = DateTime.Today,
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(user, Roles.Grant);
+                }
+            }
         }
     }
 }
