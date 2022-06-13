@@ -128,6 +128,7 @@ export default class wordlist extends Vue {
   }
 
   created() {
+    this.checkLoggedIn()
     this.getAllWords()
     JWT.setToken(localStorage.getItem('token'), this.$axios)
     this.roles = JWT.tokenData.roles
@@ -138,6 +139,22 @@ export default class wordlist extends Vue {
       ) {
         this.authorized = true
       }
+    }
+  }
+
+  checkLoggedIn() {
+    if (
+      localStorage.getItem('token') === null ||
+      localStorage.getItem('token')!.length < 5
+    ) {
+      this.$axios
+        .post('Token/GetToken', {
+          username: 'Guest@intellitect.com',
+          password: 'P@ssw0rd123',
+        })
+        .then((result) => {
+          JWT.setToken(result.data.token, this.$axios)
+        })
     }
   }
 
@@ -161,7 +178,9 @@ export default class wordlist extends Vue {
 
   getSearch() {
     this.$axios
-      .get(`/api/Word/GetNumberOfPages?partialWord=${this.searchterm}&count=${this.perPage}`)
+      .get(
+        `/api/Word/GetNumberOfPages?partialWord=${this.searchterm}&count=${this.perPage}`
+      )
       .then((response) => {
         this.pages = response.data
       })
